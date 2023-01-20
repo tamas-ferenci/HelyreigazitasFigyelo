@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="hu">
+	<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<title>Helyreigazítás-figyelő</title>
+	
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css"/>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/jq-3.6.0/dt-1.13.1/sp-2.1.0/sl-1.5.0/datatables.min.css"/>
+	
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/v/bs5/jq-3.6.0/dt-1.13.1/sp-2.1.0/sl-1.5.0/datatables.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.13.1/sorting/diacritics-sort.js"></script>
+	
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.43.0/plotly-locale-hu.js"></script>
+	<script>Plotly.setPlotConfig({locale: 'hu'})</script>
+	
+	<style>
+	#example tbody tr.odd {
+		background-color: lightgray;
+	}
+	#example tbody tr.even {
+		background-color: lightgray;
+	}
+	#example tr.dt-hasChild > td:nth-child(1) {
+		font-weight: bold;
+	}
+	</style>
+	
+	<script type="text/javascript" src="cimkek.js"></script>
+	
+	<script>
+	Object.filter = (obj, predicate) => 
+					Object.assign(...Object.keys(obj)
+									.filter( key => predicate(obj[key]) )
+									.map( key => ({ [key]: obj[key] }) ) );
+									
+	function keseskiiro(numberOfDays) {
+		var years = Math.floor(numberOfDays / 365.242199);
+		var months = Math.floor(numberOfDays % 365.242199 / 30.43692);
+		var days = Math.floor(numberOfDays % 365.242199 % 30.43692);
+		var hours = (numberOfDays - Math.floor(numberOfDays))*24;
+		
+		var displaytext = years > 0 ? years + ' év' : '';
+		displaytext = displaytext + (months > 0 ? ( (displaytext!='' ? ', ' : '') + months + ' hónap') : '');
+		displaytext = displaytext + (days > 0 ? ( (displaytext!='' ? ', ' : '') + days + ' nap') : '');
+		return displaytext=='' ?  Math.round(hours) + ' óra' : displaytext;
+	}
+									
+	function format(d) {
+	 
+		var str = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+			'<tr>' +
+			'<td>Helyreigazítás szövege:</td>' +
+			'<td>' +
+			d.HelyreigazitasSzoveg +
+			'</td>' +
+			'</tr>' +
+			'<tr>' +
+			'<td>Címkék:</td>' +
+			'<td>' +
+			d.Cimkek.map(a => a.CimkeSzoveg).join(', ') +
+			'</td>' +
+			'</tr>' +
+			'<tr>' +
+			'<td>Cikk URL:</td>' +
+			'<td>' +
+			'<a target = "_blank" rel = "noopener" href="' + d.CikkURL + '">' + d.CikkURL + '</a> (<a target = "_blank" rel = "noopener" href="https://web.archive.org/web/*/' + d.CikkURL + '">archivált link</a>)' +
+			', helyreigazítás jelölve: ' + (d.HelyreigazitasJelolve=='NA' ? 'Nem ismert' : (d.HelyreigazitasJelolve==1 ? 'Igen' : 'Nem')) +
+			'</td>' +
+			'</tr>' +
+			'<tr>' +
+			'<td>Helyreigazítás URL:</td>' +
+			'<td>' +
+			(d.HelyreigazitasURL=='' ? 'Nincs külön helyreigazító cikk' : '<a target = "_blank" rel = "noopener" href="' + d.HelyreigazitasURL + '">' + d.HelyreigazitasURL + '</a> (<a target = "_blank" rel = "noopener" href="https://web.archive.org/web/*/' + d.HelyreigazitasURL + '">archivált link</a>)') +
+			'</td>' +
+			'</tr>' +
+			'<tr>' +
+			'<td>Hivatkozások:</td>' +
+			'<td>';
+		if(d.Hivatkozasok.length>0) {
+			str +=
+				'<div class="accordion" id="accordionExample">' +
+				'<div class="accordion-item">' +
+				'<h2 class="accordion-header" id="heading' + d.HelyreigazitasID + '">' +
+				'<button class="accordion-button" type="button" ' +
+				'data-bs-toggle="collapse" data-bs-target="#collapse' + d.HelyreigazitasID +
+				'" aria-expanded="false" aria-controls="collapse' + d.HelyreigazitasID +'">' +
+				'Hivatkozások száma: ' + d.Hivatkozasok.length +
+				'</button>' +
+				'</h2>' +
+				'<div id="collapse' + d.HelyreigazitasID + '" class="accordion-collapse" ' +
+				'aria-labelledby="heading' + d.HelyreigazitasID + '" data-bs-parent="#accordionExample">' +
+				'<div class="accordion-body">' +
+				'<table><thead><tr><th>Sajtótermék</th><th>Cím</th><th>URL</th></tr></thead>';
+			
+			for (i = 0; i < d.Hivatkozasok.length; i++) {
+				str += '<tr><td>' + d.Hivatkozasok[i].SajtotermekNev + '</td><td>' + d.Hivatkozasok[i].HivatkozasCim + '</td><td><a target = "_blank" rel = "noopener" href="' + d.Hivatkozasok[i].HivatkozasURL + '">' + d.Hivatkozasok[i].HivatkozasURL + '</a></td></tr>';
+			}
+			
+			str +=
+				'</table>' +
+				'</div></div></div></div>';
+			} else str += 'Nincs átvétel';   
+			
+			str = str +
+			'</td>' +
+			'</tr>' +
+			'</table>';
+
+		return (str);
+	}
+	
+	function createYearCikkDatum(year) {
+		return {
+			label: year,
+			value: function(rowData, rowIdx) {
+                                return rowData.CikkDatum.substring(0, 4) == year;
+                            }
+		}		
+	}
+	function createYearHelyreigazitasDatum(year) {
+		return {
+			label: year,
+			value: function(rowData, rowIdx) {
+                                return rowData.HelyreigazitasDatum.substring(0, 4) == year;
+                            }
+		}		
+	}
+	function createCimke(cimke) {
+		return {
+			label: cimke,
+			value: function(rowData, rowIdx) {
+                                return rowData.Cimkek.map(a => a.CimkeSzoveg).includes(cimke);
+                            }
+		}
+	}
+	
+	$(document).ready(function () {
+		var dt = $('#example').DataTable({
+		ajax: 'helyreigazitasok.json',
+		responsive: true,
+		columns: [
+			{ data: 'SajtotermekNev' },
+			{ data: 'CikkDatum' },
+			{ data: 'CikkIdo' },
+			{ data: 'CikkCim' },
+			{ data: 'HelyreigazitasDatum' },
+			{ data: 'HelyreigazitasIdo' },
+			{
+				data: 'Keses',
+				render: function ( data, type, row, meta ) {
+					if(type == 'display')
+					   return (data=='NA' ? '' : keseskiiro(data));
+					else
+					   return Number(data);
+			    }
+			}
+		],
+		order: [[1, 'desc']],
+		searchPanes: {
+            columns: [0,1,4],
+			panes: [
+                {
+                    header: 'Címke',
+                    options: cimkek.map(cimke => createCimke(cimke))
+                },
+				{
+                    header: 'Helyreigazítás késése',
+                    options: [
+								{
+									label: '<1 hét',
+									value: function(rowData, rowIdx) {
+						                                return rowData.Keses<7;
+						                            }
+								},
+								{
+									label: '1 hét - 1 hónap',
+									value: function(rowData, rowIdx) {
+						                                return rowData.Keses>=7 & rowData.Keses <30.43692;
+						                            }
+								},
+								{
+									label: '1 hónap - 1 év',
+									value: function(rowData, rowIdx) {
+						                                return rowData.Keses>=30.43692 & rowData.Keses <365.242199;
+						                            }
+								},
+								{
+									label: '>1 év',
+									value: function(rowData, rowIdx) {
+						                                return rowData.Keses>=365.242199;
+						                            }
+								},
+								{
+									label: 'Nem ismert',
+									value: function(rowData, rowIdx) {
+						                                return rowData.Keses=='NA';
+						                            }
+								},
+							 ],
+					/*dtOpts: {
+						columnDefs: [ { 
+							targets: [0], 
+							render: function ( data, type, row, meta ) {
+							  if (type === 'sort') {
+								var sortnum;
+								switch(data) {
+								  case '<1 hét':
+									sortnum = 1;
+									break;
+								  case '1 hét - 1 hónap':
+									sortnum = 2;
+									break;
+								  case '1 hónap - 1 év':
+									sortnum = 3;
+									break;
+								  case '>1 év':
+									sortnum = 4;
+									break;
+								  case 'Nem ismert':
+									sortnum = 5;
+									break;
+								}
+								return sortnum; 
+								return(data);
+							  } else {
+							   return data;
+							 }
+							}
+						  } ],
+					}*/
+                },
+				{
+                    header: 'Helyreigazítás jelölve',
+                    options: [
+								{
+									label: 'Igen',
+									value: function(rowData, rowIdx) {
+						                                return rowData.HelyreigazitasJelolve==1;
+						                            }
+								},
+								{
+									label: 'Nem',
+									value: function(rowData, rowIdx) {
+						                                return rowData.HelyreigazitasJelolve==0;
+						                            }
+								},
+								{
+									label: 'Nem ismert',
+									value: function(rowData, rowIdx) {
+						                                return rowData.HelyreigazitasJelolve=='NA';
+						                            }
+								},								
+							 ]
+                }
+            ]
+        },
+		dom: 'Plfrtip',
+		columnDefs: [
+            {
+                searchPanes: {
+                    show: true
+                },
+                targets: [0],
+				type: 'diacritics-neutralise'
+            },
+			{
+                searchPanes: {
+					header: 'Cikk megjelenésének éve',
+                    show: true,
+					options: Array(16).fill().map((element, index) => index + 2007).map(year => createYearCikkDatum(year))
+                },
+                targets: [1],
+				type: 'diacritics-neutralise'
+            },
+			{
+                searchPanes: {
+					header: 'Helyreigazítás megjelenésének éve',
+                    show: true,
+					options: Array(16).fill().map((element, index) => index + 2007).map(year => createYearHelyreigazitasDatum(year)).concat({
+						label: 'Nem ismert',
+						value: function(rowData, rowIdx) {
+                                return rowData.HelyreigazitasDatum.length == 0;
+                            }
+					})
+                },
+                targets: [4],
+				type: 'diacritics-neutralise'
+            }
+        ],
+		pageLength: 50,
+		language: {
+			url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/hu.json'
+		},
+		initComplete: function () {
+				this.api().rows().every(function(){
+					if(!this.child.isShown()){
+						this.child(format(this.data())).show();
+						$(this.node()).addClass('shown');
+					}
+				});
+			}
+		});
+	});	
+	</script>
+	</head>
+	<body>  
+	<div class="container-fluid">
+		<div class="row">
+		<div class="col-1"></div>
+		<div class="col-10">
+		<h1>HELYREIGAZÍTÁS-FIGYELŐ</h2>
+		<h2>Helyreigazítások a magyar online sajtóban, 2008-2022</h2>
+		
+		<ul class="nav nav-tabs" id="myTab" role="tablist">
+		  <li class="nav-item" role="presentation">
+			<button class="nav-link active" id="tabDB-tab" data-bs-toggle="tab" data-bs-target="#tabDB" type="button" role="tab" aria-controls="tabDB" aria-selected="true">Adatbázis</button>
+		  </li>
+		  <li class="nav-item dropdown" role="presentation">
+			<button class="nav-link dropdown-toggle" id="tabViz-tab" data-bs-toggle="dropdown" data-bs-target="#tabViz" type="button" role="tab" aria-controls="tabViz" aria-selected="false"  aria-expanded="false">Vizualizációk</button>
+			<ul class="dropdown-menu">
+			  <li><button class="dropdown-item" id="tabVizCimkek-tab" data-bs-toggle="tab" data-bs-target="#tabVizCimkek" type="button" role="tab" aria-controls="tabVizCimkek" aria-selected="false" aria-expanded="false">Címkék gyakorisága</button></li>
+			  <li><button class="dropdown-item" id="tabVizCimkekIdoben-tab" data-bs-toggle="tab" data-bs-target="#tabVizCimkekIdoben" type="button" role="tab" aria-controls="tabVizCimkekIdoben" aria-selected="false" aria-expanded="false">Címkék gyakorisága időben</button></li>
+			  <li><button class="dropdown-item" id="tabVizJeloles-tab" data-bs-toggle="tab" data-bs-target="#tabVizJeloles" type="button" role="tab" aria-controls="tabVizJeloles" aria-selected="false" aria-expanded="false">Helyreigazítások jelöltségének aránya</button></li>
+			  <li><button class="dropdown-item" id="tabVizKeses-tab" data-bs-toggle="tab" data-bs-target="#tabVizKeses" type="button" role="tab" aria-controls="tabVizKeses" aria-selected="false" aria-expanded="false">Helyreigazítások késésének eloszlása</button></li>
+			</ul>
+		  </li>
+		  <li class="nav-item" role="presentation">
+			<button class="nav-link" id="tabMagy-tab" data-bs-toggle="tab" data-bs-target="#tabMagy" type="button" role="tab" aria-controls="tabMagy" aria-selected="false">Magyarázat</a>
+		  </li>
+		</ul>
+		
+		<div class="tab-content" id="myTabContent">
+		  <div class="tab-pane fade show active" id="tabDB" role="tabpanel" aria-labelledby="tabDB-tab">
+			<table id="example" class="table">
+				<thead>
+					<tr>
+						<th>Sajtótermék</th>
+						<th>Cikk dátuma</th>
+						<th>Cikk időpontja</th>
+						<th>Cikk címe</th>
+						<th>Helyreigazítás dátuma</th>
+						<th>Helyreigazítás időpontja</th>
+						<th>Helyreigazítás késése</th>
+					</tr>
+				</thead>
+				<tfoot>
+					<tr>
+						<th>Sajtótermék</th>
+						<th>Cikk dátuma</th>
+						<th>Cikk időpontja</th>
+						<th>Cikk címe</th>
+						<th>Helyreigazítás dátuma</th>
+						<th>Helyreigazítás időpontja</th>
+						<th>Helyreigazítás késése</th>
+					</tr>
+				</tfoot>
+			</table>
+		  </div>
+		<div class="tab-pane fade" id="tabVizCimkek" role="tabpanel" aria-labelledby="tabVizCimkek-tab">
+		<p>Ez az ábra megmutatja, hogy a teljes vizsgált időtartományban hány olyan helyreigazítás jelent meg, mely adott címkével bír. Beállítható, hogy mi az a minimális darabszám, amivel egy címke felkerüljön az ábrára, illetve, hogy a politikai pártok megjelenjenek-e a címkék között. Az ábra jobb felső sarkán elérhetőek a további opciók, beleértve az ábra letöltését.</p>
+		<div class="row g-3 align-items-center">
+		  <div class="col-auto">
+			<label class="form-label" for="minhelyreigCimkek">Helyreigazítások minimális száma:</label>
+		  </div>
+		  <div class="col-auto">
+			<input type="number" id="minhelyreigCimkek" class="form-control" min="1" max="100" value="10" onChange="makeplotCimkek();"/>
+		  </div>
+		</div>
+		<div class="form-check">
+			<input class="form-check-input" type="checkbox" id="partokisCimkek" onChange="makeplotCimkek();"/>
+			<label class="form-check-label" for="partokisCimkek">Politikai pártok is szerepeljenek</label>
+		</div>
+		<div id="plotlyDivCimkek" style="height: 75vh; width: 90vw"></div>
+		<script>		
+		function makeplotCimkek() {
+			Plotly.d3.json('helyreigazitasok.json', function(data) {
+				var tabres = data.data.map(x => x.Cimkek).flat();
+				tabres = Object.filter(tabres, value => value.PolitikaiPart <= document.getElementById('partokisCimkek').checked);
+				tabres = Object.entries(tabres).map(x => x[1].CimkeSzoveg);
+				tabres = tabres.reduce(function (acc, curr) {
+					return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+				}, {});
+				tabres = Object.filter(tabres, value => value >= document.getElementById('minhelyreigCimkek').value);
+				tabres = Object.entries(tabres).sort((a, b) => a[1] - b[1]);
+				
+				var data = [{
+					type: 'bar',
+					x: tabres.map(x => x[1]), 
+					y: tabres.map(x => x[0]),
+					orientation: 'h'
+				  }];
+				  var config = {responsive: true};
+				  var layout = {
+					title: 'Adott témában született helyreigazítások száma',
+					yaxis: {
+						automargin: true
+					},
+					xaxis: {
+						title: 'Címke gyakorisága [db]'
+					},
+					annotations: [{
+						text: "www.helyreigazitas-figyelo.hu",
+						showarrow: false,
+						align: 'center',
+						x: 0,
+						y: -0.05,
+						xref: 'paper',
+						yref: 'paper'
+					  }]
+				  };
+				  
+				Plotly.newPlot('plotlyDivCimkek', data, layout, config);
+			});
+		};
+		
+		makeplotCimkek();
+		</script>
+		</div>
+		<div class="tab-pane fade" id="tabVizCimkekIdoben" role="tabpanel" aria-labelledby="tabVizCimkekIdoben-tab">
+			<p>Ez az ábra megmutatja, hogy az egyes címkék időben mikor, milyen sűrűséggel bukkantak fel. Az ábra havi felbontású, tehát azt mutatja meg, hogy adott hónapban összesen hány, adott címkéjű helyreigazítással később helyreigazított cikk jelent meg. A jobb oldalon a címkék felsorolása látható; a szürkék nincsenek ábrázolva, az élénk színűek jelennek meg az ábrán. Ezek beállíthatóak annak megadásával, hogy a minimum hányszor felbukkanó címkék jelenjenek meg, illetve, hogy a politikai pártok megjelenjenek-e. Ezek azonban csak kiindulási állapotot jelentenek, ezek beállítása után a címkékre kattintva bármelyik be- és kikapcsolható. A minimum, illetve a politikai párt mezők átállítása eltünteti ezeket a kézi beállításokat, és alaphelyzetbe hozza az ábrát. Az ábra alatti kisebb csík használatával kiválasztható adott időtartomány: a bal és jobb szélén lévő fehér dobozokra kattintva és azokat beljebb húzva összehúzható a felül megjelenített tartomány. Néhány nevezetes szélesség a bal felső szürke gombokra kattintva is beállítható. (Lent a fehér doboznak nem a szélére, hanem a belsejébe kattintva a doboz odébb is húzható.) A tartomány a felső ábrán is szűkíthető, adott szakasz folyamatosan lenyomott egérgombbal történő kijelölésével. Dupla kattintással visszaáll az eredeti, teljes szélességű ábra. Az ábra jobb felső sarkán elérhetőek a további opciók, beleértve az ábra letöltését.</p>
+			<div class="row g-3 align-items-center">
+			  <div class="col-auto">
+				<label class="form-label" for="minhelyreigCimkekIdoben">Helyreigazítások minimális száma:</label>
+			  </div>
+			  <div class="col-auto">
+				<input type="number" id="minhelyreigCimkekIdoben" class="form-control" min="1" max="100" value="5" onChange="makeplotCimkekIdoben();"/>
+			  </div>
+			</div>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" id="partokisCimkekIdoben" onChange="makeplotCimkekIdoben();"/>
+				<label class="form-check-label" for="partokisCimkekIdoben">Politikai pártok is szerepeljenek</label>
+			</div>
+			<div id="plotlyDivCimkekIdoben" style="height: 70vh; width: 90vw"></div>
+			<script>		
+			function makeplotCimkekIdoben() {
+			Plotly.d3.json('helyreigido.json', function(data) {
+				for(i = 0; i<data.length; i++)
+					data[i].visible = data[i].OsszN >= document.getElementById('minhelyreigCimkekIdoben').value & data[i].PolitikaiPart<= document.getElementById('partokisCimkekIdoben').checked ? "true" : "legendonly";
+				var config = {responsive: true};
+				var layout = {
+					title: 'Adott témában született helyreigazítások száma időben',
+					yaxis: {
+						automargin: true
+					},
+					xaxis: {
+						autorange: true,
+						range: ['2008-01-01', '2012-12-31'],
+						rangeselector: {buttons: [
+							{
+								count: 6,
+								label: '6 hónap',
+								step: 'month',
+								stepmode: 'backward'
+							},
+							{
+								count: 12,
+								label: '1 év',
+								step: 'month',
+								stepmode: 'backward'
+							},
+							{
+								count: 4*12,
+								label: '4 év',
+								step: 'month',
+								stepmode: 'backward',
+								active: true
+							},
+							{
+								count: 15*12,
+								label: 'Teljes',
+								step: 'month',
+								stepmode: 'backward'
+							}
+							]},
+						rangeslider: {range: ['2018-01-01', '2022-12-31']},
+						type: 'date'
+						},
+						annotations: [{
+							text: "www.helyreigazitas-figyelo.hu",
+							showarrow: false,
+							align: 'center',
+							x: 0,
+							y: -0.05,
+							xref: 'paper',
+							yref: 'paper'
+						}]
+					};
+				Plotly.newPlot('plotlyDivCimkekIdoben', data, layout, config);
+				});
+			};
+
+			makeplotCimkekIdoben();
+			</script>
+		</div>
+		<div class="tab-pane fade" id="tabVizJeloles" role="tabpanel" aria-labelledby="tabVizJeloles-tab">
+			<p>Ez az ábra megadja, hogy az egyes sajtótermékek az általuk közölt és később helyreigazított cikkek hány százalékánál jelölték magán az eredeti cikken, hogy az helyre lett igazítva. Az ábrán szereplő sajtótermékek köre beállítható: megadható, hogy mi az a minimális számú helyreigazított cikk, amivel egy sajtótermék felkerül az ábrára, illetve, hogy csak a teljesen feldolgozott sajtótermékek jelenjenek-e meg. Az ábra jobb felső sarkán elérhetőek a további opciók, beleértve az ábra letöltését.</p>
+			<div class="row g-3 align-items-center">
+			  <div class="col-auto">
+				<label class="form-label" for="minhelyreigJeloles">Helyreigazítások minimális száma:</label>
+			  </div>
+			  <div class="col-auto">
+				<input type="number" id="minhelyreigJeloles" class="form-control" min="1" max="100" value="5" onChange="makeplotJeloles();"/>
+			  </div>
+			</div>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" checked = "1" id="csakkeszJeloles" onChange="makeplotJeloles();">
+				<label class="form-check-label" for="csakkeszJeloles">Csak azok a sajtótermékek szerepeljenek, amelyeknek befejeződött a legyűjtése</label>
+			</div>
+			<div id="plotlyDivJeloles" style="height: 75vh; width: 90vw"></div>
+			<script>		
+			function makeplotJeloles() {
+			Plotly.d3.json('helyreigazitasok.json', function(data) {
+					var res = Object.values(data.data.reduce(function(m, d){						
+						if(!m[d.SajtotermekNev]){
+						  m[d.SajtotermekNev] = {...d, ossz: d.HelyreigazitasJelolve=='NA' ? 0 : 1, jelolt: d.HelyreigazitasJelolve=='NA' ? 0 : 1};						  
+						  return m;
+						}
+						m[d.SajtotermekNev].jelolt += d.HelyreigazitasJelolve=='NA' ? 0 : d.HelyreigazitasJelolve;
+						m[d.SajtotermekNev].ossz += d.HelyreigazitasJelolve!='NA';
+						return m;
+					 },{})).map(function(x) {return {SajtotermekNev: x.SajtotermekNev, KeszVan: x.KeszVan, OsszHelyreigazitas: x.ossz, Jelolt: x.jelolt, Arany: x.jelolt/x.ossz};});
+					 res = res.filter(value => value.KeszVan >= document.getElementById('csakkeszJeloles').checked);
+					 res = res.filter(value => value.OsszHelyreigazitas >= document.getElementById('minhelyreigJeloles').value);
+					 res = res.sort((a, b) => a.Arany - b.Arany);
+					 res = [{
+						type: 'bar',
+						x: res.map(x => x.Arany*100),
+						y: res.map(x => x.SajtotermekNev),
+						text: res.map(x => 'Helyreigazítások száma: ' + x.OsszHelyreigazitas + ', ebből jelölve: ' + x.Jelolt),
+						orientation: 'h'
+					  }];
+					  var config = {responsive: true};
+					  var layout = {
+						title: 'Helyreigazítások jelöltségének aránya',
+						yaxis: {
+							automargin: true
+						},
+						xaxis: {
+							title: 'Jelölt cikk aránya [%]'
+						},
+						annotations: [{
+							text: "www.helyreigazitas-figyelo.hu",
+							showarrow: false,
+							align: 'center',
+							x: 0,
+							y: -0.05,
+							xref: 'paper',
+							yref: 'paper'
+						}]
+					  };
+					  
+					Plotly.newPlot('plotlyDivJeloles', res, layout, config);
+				});
+			};
+
+			makeplotJeloles();
+			</script>
+		</div>
+		<div class="tab-pane fade" id="tabVizKeses" role="tabpanel" aria-labelledby="tabVizKeses-tab">
+			<p>Ez az ábra szemlélteti azt, hogy az egyes helyreigazítások mennyivel a helyreigazított cikk közlése után jelentek meg. Az ábrán minden pont egy ilyen "késés"; a függőleges tengely mutatja a sajtóterméket, a vízszintes a késés idejét, évben mérve. Egy pontra ráállva megjelenik a cikk címe, illetve a cikk és a helyreigazítás megjelenésének az időpontja. Az ábrán egérrel kijelölve egy területet arra ránagyít (ebből dupla kattintással lehet kilépni, visszatérve a teljes ábrára). Az ábra jobb felső sarkán elérhetőek a további opciók, beleértve az ábra letöltését. Beállítható, hogy csak a teljesen feldolgozott sajtótermékek jelenjenek-e meg.</p>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" checked = "1" id="csakkeszKeses" onChange="makeplotKeses();">
+				<label class="form-check-label" for="csakkeszKeses">Csak azok a sajtótermékek szerepeljenek, amelyeknek befejeződött a legyűjtése</label>
+			</div>
+			<div id="plotlyDivKeses" style="height: 75vh; width: 90vw"></div>
+			<script>		
+			function makeplotKeses() {
+			Plotly.d3.json('helyreigazitasok.json', function(data) {					
+					var res = Object.filter(data.data, value => value.KeszVan >= document.getElementById('csakkeszKeses').checked);					
+					res = Object.filter(res, value => value.Keses!='NA');
+					res = [{
+						type: 'scatter',
+						mode: 'markers',
+						x: Object.values(res).map(x => x.Keses/365),
+						y: Object.values(res).map(x => x.SajtotermekNev),
+						text: Object.values(res).map(x => 'Cím: ' + x.CikkCim + '<br>Cikk megjelent: ' + x.CikkDatum + ', helyreigazítás megjelent: ' + x.HelyreigazitasDatum)
+					  }];
+					  var config = {responsive: true};
+					  var layout = {
+						title: 'Helyreigazítások késésének eloszlása',
+						yaxis: {
+							automargin: true
+						},
+						xaxis: {
+							title: 'Késés időtartama [év]'
+						},
+						annotations: [{
+							text: "www.helyreigazitas-figyelo.hu",
+							showarrow: false,
+							align: 'center',
+							x: 0,
+							y: -0.05,
+							xref: 'paper',
+							yref: 'paper'
+						}]
+					  };
+					  
+					Plotly.newPlot('plotlyDivKeses', res, layout, config);
+				});
+			};
+
+			makeplotKeses();
+			</script>
+		</div>
+		<div class="tab-pane fade" id="tabMagy" role="tabpanel" aria-labelledby="tabMagy-tab">
+			<b>Mi a célja ennek az oldalnak?</b></p>
+			<p>A magyar online, írott sajtóban megjelenő helyreigazítások összegyűjtése és transzparens közzététele, gépi úton is feldolgozható, kutatható módon és hétköznapi böngészésre, elemzésre is alkalmas formában. Törekedtem a teljeskörűségre a 2008. január 1. és 2022. december 31. között megjelent helyreigazításokra vonatkozóan. A projekt becslésem szerint jelenleg 70-80%-os készültségben van.</p>
+			<p><b>Miért fontos mindez?</b></p>
+			<p>A sajtóhelyreigazítások rendszerének egyik alapvető rákfenéje, hogy nem jelent túl nagy visszatartó erőt, pláne nem a szándékos lejáratások ellen. Ennek egyik oka, hogy bár legtöbb esetben online térben zajló kommunikációról beszélünk, ami feltételezi akár az azonnali reakciót is, azonban a helyreigazításokat sokszor lassan, adott esetben elhúzódó vagy szándékosan elhúzott peres eljárások végén, akár évekkel a hamis információkat tartalmazó cikk után publikálják (van rá példa, hogy egy választás előtti kampányban közzétett cikk helyreigazítása a <i>következő</i> választás <i>után</i> jelent meg). Ekkorra már jó eséllyel olyan időtávlatba került az eredeti cikk, hogy a helyreigazítás kommunikációs hatásfoka nem egyenértékű a korábban publikált téves információval, hanem sokkal-sokkal kisebb. A helyreigazító közleményt századannyian fogják elolvasni, továbbküldeni, mint az eredeti cikket, annak meg végképp minimális a hatása, hogy egy sok évvel ezelőtti cikk tetejére kikerül egy figyelmeztetés.</p>
+			<p>A jelenség egyik oka tehát épp az, hogy ezek a helyreigazítások <i>feledésbe merülnek</i>, nagyon nehéz egy összképet látni. Ez ráadásul az előbbi problémát is súlyosbítja, hiszen így az újságok számára is kisebb nyomást jelent, hogy ne közöljenek valótlan állításokat, illetve ellenőrizzék megfelelően információforrásaikat. Az egyik célom tehát az volt, hogy ezen a helyzeten javítsak, átláthatóbbá, nyomonkövethetőbbé téve a megjelent helyreigazításokat.</p>
+			<p>A másik célom, hogy lehetővé tegyem ezen adatok kutatási célú felhasználását. Egységes, feldolgozható adatbázis híján ez nagyon nehéz, pedig szerintem értékes információk olvashatóak ki belőle. Nekem két potenciális alkalmazás van különösen a fejemben: egyrészt releváns lehet a politikatörténet számára (pl. rekonstruálni, hogy mikor ki ellen folyt lejáratókampány), másrészt a kommunikációtudomány számára (pl. diskurzuselemzés vagy médiaelemzés kapcsán). Ez utóbbit én sem tudom, hogy mit jelent, de nagyon okos emberek azt mondták nekem, hogy így van. Egyszóval remélem, hogy a tudományos kutatást is tudja szolgálni majd egy ilyen adatbázis.</p>
+			<p><b>Hogyan kerültek összegyűjtésre ezek a helyreigazítások?</b></p>
+			<p>Mivel a helyreigazításoknak nincsen központi gyűjtőhelye (ugye épp ez a probléma), így kénytelen voltam internetes kereséssel megpróbálni elérni a célt, mégpedig semleges módon, azaz valamennyi helyreigazítás válogatás nélküli begyűjtésével.</p>
+			<p>A helyreigazító közlemények jelentős részének szerencsére a címe „Helyreigazítás”, de ha nem is, a szövegek tartalmaznak állandó, illetve kifejezetten jellemző elemket. Immár több mint ezer ilyen végigolvasása alapján mondhatom, hogy a többségükben szerepel a „valótlanul állítottuk”, „tévesen állítottuk”, „híreszteltük” vagy a „hamis színben tüntettük fel” kitételek valamelyike, ez adta a keresés során a legnagyobb könnyebbséget, praktikusan lehetővé is téve a feladat megoldását.</p>
+			<p>Éppen ezért a munkamódszerem az volt, hogy először a Google-ben kerestem rá ezekre a kifejezésekre, begyűjtve a sajtótermékeket, ahol ilyen megjelent. Néha az így feltárt cikkek más portálok helyreigazításairól számoltak be, ilyen módon is gyűjtöttem a sajtótermékeket (és természetesen a közölt adatok vagy a link alapján megkerestem az eredeti helyreigazítást, ha még nem szerepelt volna a listában). Ezt követően az egyes online sajtótermékek honlapján a kereső funkció segítségével rákerestem a „helyreigazítás” szóra, illetve a fenti kifejezésekre. Ezt kiegészítettem azzal, hogy a Google-ben is rákerestem ugyanezekre, leszűkítve a keresést az újság weboldalára.</p>
+			<p><b>Mit jelent az, hogy „semleges” volt a gyűjtés?</b></p>
+			<p>Két dolgot jelent a semlegesség ezen adatbázis esetében. Az egyik, hogy semmiféle megszorítást nem tettem arra vonatkozóan, hogy milyen helyreigazításokat gyűjtök, nem szűkítettem le, hogy mi a témája, hol jelent meg, miről szól stb. Lehetett volna érvelni bizonyos szűkítések mellett, de az ilyenekbe pont azért nem mentem bele, hogy elkerüljem ezeket a vitákat, egyszerűen mindent igyekeztem összegyűjteni, és akkor biztosan nincs ilyen probléma. A másik, hogy a helyreigazításokhoz semmilyen véleményt, értelmezést, politikai interpretációt nem fűztem. Én pusztán az adatgyűjtésre vállalkoztam, a nyers információk összeszedésére és prezentálására.</p>
+			<p><b>Az érthető, hogy miért 2022-ig tart, de miért pont 2008-ban indult a gyűjtés?</b></p>
+			<p>Hogy miért épp 2008, arra egyszerűen az a válasz, hogy így lett szép kerek szám, hogy pontosan 15 évet fog át az adatbázis. De hogy válaszoljak valójában a kérdésre, azért vágtam el valahol a dolgot, mert ahogy mész egyre régebbre, úgy válik a nyomtatott sajtó, valamint a tévé és a rádió egyre dominánsabbá az online sajtóhoz képest. Ez már 2008-ra is eléggé igaz, ha még tovább mentem volna vissza, akkor pláne. Most kérdezhetnéd, hogy ez miért gond, maximum ott már nem nagyon lesz helyreigazítás (ahogy cikk sem). Igen, csak az a probléma, hogy egyes újságok, amik megjelentek nyomtatottan is, kirakták a cikkeket a weboldalukra is, egyidejűleg, vagy akár utólag digitalizálva. Azonban ezt láthatólag nem mindenki tette meg, ami azért gond, mert így félrevezető lehet, ha valahol sok helyreigazítás jelenik meg: nem biztos, hogy azért van, mert sokat igazítottak helyre, lehet, hogy egyszerűen rendesebben digitalizálták az archívumukat, míg másnál nem azért nincs helyreigazítás, mert semmit nem kellett helyreigazítaniuk, hanem azért, mert azok nincsenek fent online.</p>
+			<p>Pontosan ezért egyébként azt gondolom, hogy ha valaki szeretné a régebbieket is felkutatni, akkor sokkal inkább már az Arcanum-ot kell néznie, tehát a beszkennelt újságokat, és nem a weben keresnie, ahogy én tettem most.</p>
+			<p><b>Mit jelent az, hogy ebben a 15 éves intervallumban volt cél a teljeskörűség?</b></p>
+			<p>Egész egyszerűen azt, hogy erre a tartományra végeztem – 2022 utolsó és 2023 első napjaiban – a keresést. Ez egy szabadidőmben végzett hobbiprojekt, így olyat nem merek vállalni, hogy ezt rendszeresen megismétlem, vagy hogy végignyálazom visszamenőleg is az Arcanum-ot, ezért rögzítettem inkább ezt az intervallumot. Természetesen, ha mutatkozik rá érdeklődés, netán mondjuk kapok későbbi helyreigazításokról is linkeket, akkor szívesen bővítem azokkal is az adatbázist, de ott már nem merek teljeskörűségre vonatkozó kijelentést tenni, mert ahhoz kellene az alapos keresés.</p>
+			<p><b>Mit jelent az, hogy „70-80 %-os” készültségben van a projekt?</b></p>
+			<p>Az adatbázis helyreigazítás táblájában jelenleg kicsit több mint 1100 helyreigazítás szerepel. A sajtótermékek táblában 67 sajtótermék van, ezek közül 14 van megjelölve mint – reményeim szerint – teljeskörűen feldogozott. Ez első ránézésre nem tűnik nagy aránynak, viszont a 14-ben benne van az összes nagyobb hírportál (a hiányzók jó részében lehet, hogy csak néhány helyreigazítás jelent meg), így ezzel együtt is azt gondolom, hogy a 15 év helyreigazításainak zömét tartalmazza az adatbázis. A sajtótermékek táblájából látható, hogy mely sajtótermékeket dolgoztam fel, illetve, hogy ezek közül melyik van késznek nyilvánítva.</p>
+			<p>Ahogy erőm és időm engedi, igyekszem a maradékot is kipótolni; annyi mindenesetre mondható, hogy ez, ami az adatbázisban látszik, egyfajta minimum – ennél csak több lehet a valóságban.</p>
+			<p><b>Mi minősült helyreigazításnak?</b></p>
+			<p>Ez a legtöbb esetben nem volt kérdés, egyértelműen jelölve van, általában „Helyreigazítás” cím alatt. De ehhez nem ragaszkodtam, a más cím alatt közölt, vagy cím nélkül közölt helyreigazításokat is ugyanúgy begyűjtöttem, de a „helyreigazítási kérelmet kapott a lapunk”, „az alábbi helyreigazítást küldték nekünk” típusú, mismásoló megfogalmazásokat, amikből nem derül ki, hogy ténylegesen elfogadták-e a helyreigazítás tartalmát, helyreigazítanak-e, nem tekintettem helyreigazításnak (kivéve, ha ez kiderült, például mert elnézést kértek érte).</p>
+			<p><b>Milyen sajtótermékekre terjedt ki a keresés?</b></p>
+			<p>Minden olyan weboldalra, mely a .hu domain alatt található, semmiféle szűkítést nem tettem. (Az átvevő oldalaknál viszont nem gyűjtöttem az ún. híraggregátor oldalakat, melyek nem tényleges sajtótermékek, csak automatizáltan, programmal gyűjtik a különböző híreket egy oldalra.) Csak a nyilvánosan elérhető, fizetést nem igénylő (nem paywall mögötti) tartalmakat gyűjtöttem.</p>
+			<p><b>Tehát egyrészt a tévék, rádiók, másrészt a nyomtatott sajtótermékek, harmadrészt a sajtótájékoztatók nem szerepelnek a listában?</b></p>
+			<p>Igen, ez pontosan így van. Az egyetlen kitétel, hogy ha a kérdéses sajtóterméknek van online felülete is, és ott (is) írásos formában megjelenik helyreigazítás, nem csak beolvassák/kinyomtatják, akkor az bele kell kerüljön az én listámba is.</p>
+			<p>Félreértés ne essék, nem mintha ez ne lenne fontos, számos ember tájékozódik mondjuk tévéből, csak egyszerűen ötletem sincs, hogy létezik-e bármilyen módszer, amivel értelmes idő alatt az ilyenek felderíthetőek (anélkül, hogy az folyamatosan tévét kellene nézni…). Az online, írott sajtó helyreigazításai azért jobban megfoghatóak, mert internetes kereséssel célirányosan megtalálhatóak.</p>
+			<p><b>Mi van akkor, ha a helyreigazítást kitette egy online újság, de aztán le is vette?</b></p>
+			<p>Ez valóban probléma. (Egyébként ez a legvalószínűbb oka, ha egy cikknek van címe és dátuma, de nincs linkje. És ez még a jobbik eset, mert ilyenkor legalább a létezéséről tudomást szereztem; tipikusan a helyreigazító közleményből.) Ebben az esetben csak az jelenthet megoldást, ha tudjuk az eredeti linket – ilyen esetben az archivált link szinte biztosan működni fog, mert az ilyen oldalakat a Wayback Machine általában sűrűn menti. Ha valakinek tudomása van ilyenről, akkor megköszönöm, ha elküldi, illetve a Wayback Machine honlapján fent lévő keresővel (Media Cloud gyűjtemény) megpróbáltam itt is rákeresni a helyreigazításokra.</p>
+			<p>A másik idekapcsolódó probléma – egyetlen esetben tapasztaltam ilyet, de sajnos erre is van példa – ha a helyreigazítást úgy publikálják, hogy annak eleve sincs önálló linkje (a főoldal alján szerepel kiírásként, ami ebből fakadóan eltűnik a főoldal következő frissítésekor). Ilyen esetben még a fenti eljárás sem működik, lévén, hogy nincs is link, amit elő lehetne archívumból venni; ilyenkor a főoldal adott napi állapotát vettem elő a Wayback Machine-ből.</p>
+			<p><b>Egyáltalán mi az, hogy archivált link, meg Wayback Machine?</b></p>
+			<p>A Wayback Machine az Internet Archive nevű digitális könyvtár projektje, a lényege, hogy folyamatosan tölti le az internetről a különböző weboldalakat, így egyfajta „levéltárként” funkcionál. Ráadásul nem csak egyszer tölt le egy weboldalt, hanem időről-időre visszatér, és újra letölti, dátumbélyegzővel ellátva (az, hogy ezt milyen sűrűn teszi, függ az oldal látogatottságától, a népszerűbb weboldalakat gyakrabban archiválja). Ilyen módon a Wayback Machine lehetővé teszi, hogy egy weboldal múltbeli állapotát megnézzük, sőt, akár számos különböző időpontra visszamenve is meg tudjuk ezt tenni.</p>
+			<p><b>Milyen adatokat vannak kigyűjtve egy helyreigazításnál?</b></p>
+			<p>Begyűjtöttem az eredeti (helyreigazított) cikk címét, ha menet közben átírták volna, akkor törekedtem arra, hogy az eredeti, közléskori címét, az URL-jét, megjelenésének dátumát és – ha volt – időpontját, valamint a helyreigazítás szövegét. Ritka esetekben előfordult, hogy csak a helyreigazítást találtam meg, ilyenkor az eredeti cikk dátuma és címe általában kiderült, az URL-je és a pontos időpontja viszont sokszor nem, ez esetben ezek hiányozhatnak az adatbázisból.</p>
+			<p>Az újságok gyakorlata a helyreigazítás közlésében nem egységes: van, hogy a helyreigazításról egy külön, saját URL-en elérhető helyreigazító közlemény is beszámol, van, hogy csak az eredeti cikket egészítik ki a helyreigazítással. Ha volt külön helyreigazító cikk, akkor begyűjtöttem annak is az URL-jét, dátumát és időpontját. Amennyiben a helyreigazítás nem külön cikként volt kitéve, hanem ugyanazon URL-en, a meglevő módosításával, akkor a legtöbbször nem lehetett egyértelműen meghatározni a helyreigazítás közlésének az időpontját (a kivétel az, ha a helyreigazítás szövegét magát is datálták). Ilyenkor, ha egyáltalán a weboldalból kinyerhető volt ez az információ, az „utoljára módosítva” dátumot jegyeztem fel a helyreigazítás dátumaként, de fontos hangsúlyozni, hogy ez bizonytalan érték (elképzelhető például, hogy a helyreigazítás közlése után, teljesen más okból, valamit még módosítottak a cikken). Éppen ezért ez az adat a nyers adatbázisban szerepel, de a weboldalon lévő kimutatások nem jelenítik meg, hiszen nem lehetek benne biztos.</p>
+			<p>Felírtam azt is, hogy az eredeti cikknél jelölve van-e a helyreigazítás ténye; jelölésnek vettem, ha egyértelmű szöveg figyelmeztet arra, hogy a cikk helyre van igazítva, vagy, ha elérhetetlenné tették az eredeti cikket. Ez egyfajta mutatója az újság korrektségének, illetve alaposságának, hiszen ha nincs jelölve, akkor egy internetes kereséssel a cikk oldalára tévedők nem fogják megtudni, hogy a cikk egyébként helyre van igazítva. Amennyiben az eredeti cikket nem találtam meg, úgy értelemszerűen nem adom meg, hogy jelölve van-e a helyreigazítás ténye.</p>
+			<p>Végezetül minden helyreigazítást elláttam az alanyára, illetve tárgyára, témájára utaló címkével.</p>
+			<p><b>Hogyan működnek a címkék?</b></p>
+			<p>Ami fontos, hogy a helyreigazítás „sértettjét” igyekeztem ezzel jelölni (legyen az akár személy, akár szervezet vagy intézmény), hogy kit vagy mit ért sérelem a helyreigazításban közölt hamis állítással, nem az összes, történetben felmerülő szereplőt és szervezetet. A címkéket mindig az alapján határoztam tehát meg, ami a helyreigazításban szerepel (nem az alapján, ami az egész cikkben).</p>
+			<p>Külön szót érdemel a személyekre vonatkozó helyreigazítás esetén a személyek szervezete. Nagyon egyszerű irányelvet követtem mindenhol: személyek szervezeti tagságát, tisztségét, politikusnál a pártállását stb. csak akkor tüntettem fel a címkék között, ha az eredeti cikk maga is szerepeltette ezt. Ez látszólag nagyon tiszta és egyértelmű, csak az a gond vele, hogy bizonyos esetekben nyilvánvalóan a politikai pártállással van összefüggésben a hír, de párt neve explicite mégsem szerepel. (Ez érthető, hiszen vannak szereplők, akiknél nem kell leírni, hogy mi a pártállásuk, teljesen nyilvánvaló minden olvasó számára.) Ezért úgy döntöttem, hogy – amellett, hogy követem az előbbi irányelvet – külön megjelölöm, hogy a címkék közül melyik jelent pártot, és ez alapján lehetővé teszem a weboldalon, hogy mindenki ízlése szerint zárja ki, vagy hagyja benne a kimutatásokban ezeket a címkéket.</p>
+			<p><b>Mit jelent az, hogy hivatkozó oldal?</b></p>
+			<p>A helyreigazítások kapcsán egy további probléma, hogy nagyon gyakran egy megjelent cikket más sajtótermékek is átvesznek, szemléznek. Ennek többféle formája lehet, az egyszerű megemlítéstől kezdve a lényegében szó szerinti átmásolásig a végén egy „írta az X portál” megjegyzéssel. A probléma ebből ott keletkezik, hogy ha az eredeti cikket helyreigazítják, attól ezek még ugyanúgy ott maradnak: semmiféle mechanizmus nincs rá, hogy a helyreigazítás „továbbterjedjen”. (És a szemléző újságírótól sem várható el, hogy a sajtóban megjelenő összes helyreigazítást folyamatosan nyomonkövesse és emlékezzen rá, adott esetben évek távlatából, hogy melyiket szemlézte.) Az igaz, hogy a szemléző újságnak is van felelőssége – a magyar jogi szaknyelv ezt hívja úgy, hogy híresztelés, amikor mástól átvett hírt közöl az ember, erre ugyanúgy vonatkozik a felelőssége – csakhogy ez még abban az esetben sem egy automatikus dolog, ha az eredeti hírt helyre is igazítják: a hírt átvevő portált is pontosan ugyanúgy helyreigazításra kell kérni, és szükség esetén ugyanúgy perelni, egyesével az összeset. Ez könnyen lehet, hogy praktikusan lehetetlen, ha mondjuk száz portál vett át egy hírt.</p>
+			<p>Éppen ezért arra gondoltam, hogy fontos lehet, természetesen a helyreigazításoktól elkülönítve, az ilyen átvételeket is összegyűjteni, mégpedig – és a fentiek fényében ez a fontos – függetlenül attól, hogy ezek az oldalak maguk helyre vannak-e igazítva.</p>
+			<p>Kérdés, hogy ezt hogyan lehet megtenni. Egyelőre egy mechanizmust használtam: a backlink-eket, azaz azt kérdeztem le, hogy mik azok az oldalak, amik belinkelték a helyreigazított oldalt. Ennek az előnye, hogy automatizálható, viszont rögtön látszik, hogy még közel nem valósítja meg a fenti célt, hiszen a belinkelés egyáltalán nem biztos, hogy átvétel (még akár az ellentéte is lehet, hogy egy „X portál hazudik” című cikkben linkelték az oldalt). Ehhez muszáj lenne ezeket a hivatkozásokat egyesével, kézzel átnézni, és megjelölni, hogy melyik tényleges átvétel. Az adatbázis támogatja ezt, de egyelőre nem volt erőm ezt megtenni (automatizálási lehetőséget pedig sajnos nem látok). Ráadásul a fordított hiba is előfordulhat, most azon túl, hogy a backlinkek gyűjtése sem biztos, hogy teljeskörű: elképzelhető, hogy egy portál átvette egy cikket, de nem hivatkozta az eredeti forrást kattintható módon. Ezek szintén nincsenek benne a hivatkozó oldalak között, és – jelen tudásom szerint – szintén csak kézi kereséssel volnának pótolhatóak, amire egyelőre szintén nem volt még erőm.</p>
+			<p><b>A helyreigazítás egyenlő azzal, hogy az eredeti cikkben hazudtak?</b></p>
+			<p>Erről nem feltétlenül van szó. Annyit jelent, hogy az eredeti cikkben valótlan információ szerepelt (vagy való információ volt hamis színben feltüntetve). Hogy aztán ez azért van, mert az újságíró jóhiszeműen tévedett, pedig igyekezett gondosan eljárni, azért van, mert gondatlanul járt el, de azért jóhiszemű volt, vagy pedig azért, mert kimondottan rosszhiszemű volt (azaz tudta, hogy amit leír, az hamis) az ebből nem derül ki.</p>
+			<p>Sőt, valójában még ennél is összetettebb a helyzet, ugyanis tulajdonképpen még az sem feltétlenül biztos, hogy az információ valótlan. Az esetek nagyobb részében persze az, de azért fontos rögzíteni, hogy az, hogy egy helyreigazítást közzétesz egy újság, azt jelenti, hogy nem tudta <i>bizonyítani</i>, hogy igaz lenne, amit leírt. Ilyen értelemben természetesen a helyreigazítás ténye mindenképp bajt jelent (igenis elvárható, hogy az újság ne írjon le olyat, amiről nem tudja igazolni, hogy úgy van!), de arról nincs szó, hogy a leírt dolog bizonyosan hamis.</p>
+			<p>Fontos az is, hogy az az újságon múlik, hogy elfogadják-e a helyreigazítást pereskedés nélkül, ezért elvileg akár az a helyzet is előállhat, hogy megijednek vagy más okból nem akarnak bíróságra menni, és elfogadnak olyat, amiben egyébként a helyreigazítást kérőnek nincs igaza. (Van rá konkrét példa az adatbázisomban is, hogy két újság közölte ugyanazt a hírt, mindkettőtől helyreigazítást kértek, az egyik leközölte, a másik perre ment – és megnyerte! Ettől még a másik helyreigazítás megjelent, és így az én adatbázisomban is szerepel.) Még akár az is elképzelhető, erre is van példa, hogy a helyreigazítás pillanatában nem bizonyítható a dolog, csak később válik azzá – de ettől még a helyreigazítás megjelent.</p>
+			<p><b>Ahol sok helyreigazítás van, az az újság megbízhatatlan, vagy akár egyenesen hazug?</b></p>
+			<p>Ez egy nagyon jó kérdés, és bár kézenfekvő lenne rávágni azt, hogy „igen”, pár óvatosságra intő szempontra felhívnám a figyelmet.</p>
+			<p>Az első és legkézenfekvőbb, hogy semmilyen információm nincs arról, hogy egy adott portálon hány cikk jelent meg a vizsgált időszakban, miközben lehet érvelni amellett, hogy a helyreigazítások számát ehhez kellene viszonyítani: nem mindegy, hogy 10 vagy 10 ezer cikkből kellett 2-t helyreigazítani. Szintén nincs információnk a cikkek jellegéről, témakör szerint összetételéről, márpedig ez is nagyon számít: a politikai cikkeket sokkal gyakrabban kell helyreigazítani, mint bármi mást, így nem mindegy, hogy az ilyen hírek mekkora hányadot képviselnek az újság cikkein belül.</p>
+			<p>Valójában azonban a probléma ennél mélyebb. És amit itt el tudok mondani, az lényegében folytatása az előző pontnak: ha röviden kellene megfogalmaznom, akkor azt mondanám, hogy <i>nem minden helyreigazítás egyenértékű</i>, ezért sem lehet őket egyszerűen „darabra” megszámolni. A legfontosabb különbségtétel (szerintem) az, hogy jóhiszemű tévedésről van-e szó, még ha esetleg gondatlanul is járt el az újságíró, vagy rosszhiszeműség – szándékos hazugság, legrosszabb esetben egy lejáratókampány folytatása – van-e a háttérben. Már csak ezért sem lehet „darabra” számolni a helyreigazításokat: az utóbbiból akár csak egyetlen egy előfordulása is aggasztó, még akkor is, ha 10 ezer cikk közül került ki.</p>
+			<p>Egyébként pontosan ezek az okai annak, hogy a ’Vizualizációk’ pontban nem tettem elérhetővé olyan lekérdezést, ami sajtótermékenként készítene kimutatást a helyreigazítások számáról.</p>
+			<p>Az a gond, hogy ezt perdöntően nehéz magából a cikkből és a helyreigazításból eldönteni. Inkább csak gyanújelekről tudok beszélni, melyek szerintem segítenek a jóhiszeműség/rosszhiszeműség kérdés eldöntésében:</p>
+			<p><ul></p>
+			<p><li>Fontos, hogy az eredeti cikk mennyiben lett helyreigazítva. Bár jelentéktelen hiba miatt nincs helye helyreigazításnak, nem mindegy, hogy egy 5 oldal hosszú oknyomozó cikkben van két, jelentékenyen hibás, de a teljes képet semmiben nem befolyásoló hiba, esetleg egy teljesen irreleváns részlet miatt kell helyreigazítani („Beperelték az újságírót című cikkünkben tévesen állítottuk, hogy ÁllamiSzerv1 perelte be az újságírót, valójában ÁllamiSzerv2 perelte be”), vagy pedig a cikk minden egyes mondata valótlan az elsőtől az utolsóig, mert ilyenre is van bőven példa.</li></p>
+			<p><li>Érdemes megvizsgálni a cikken és a helyreigazításon túl a szélesebb kontextust is: nem mindegy, hogy egyetlen egyszer jelenik meg egy hamis állítás adott szereplővel kapcsolatban, vagy újra meg újra, folyamatosan ismételve, pláne, ha több különböző sajtótermékben is, ami már a háttérbeli koordináció lehetőségét is felveti.</li></p>
+			<p><li>Végezetül érdemes lehet megnézni az eredeti cikk megjelenése és a helyreigazítás közlése között eltelt időt. Ha néhány nap, vagy legfeljebb hét a különbség, akkor jó eséllyel pereskedés nélkül elfogadta az újság a helyreigazítást. Ha nem is perdöntő bizonyíték, de mindenesetre a jóhiszeműség mellett szól ez.</li></p>
+			<p></ul></p>
+			<p>Egyszóval óva intenék attól mindenkit, hogy teljesen mechanikusan vonjon le következtetéseket, minden ilyen kérdés egyedi megfontolást igényel. Ezt azzal próbálom segíteni, hogy a ’Vizualizációk’ pont alatt elérhetővé tettem néhány olyan kimutatást, ami támogatja a fenti vizsgálatokat (például mekkora késéssel közölte adott sajtótermék a helyreigazításokat, milyen arányban jelölte az eredeti cikken, hogy helyre van igazítva stb.).</p>
+			<p><b>Akkor ez a lista tartalmazza az összes, magyar online sajtóban megjelent hamis állítást?</b></p>
+			<p>Dehogy! És nem csak arról van szó, hogy a gyűjtésem nem feltétlenül tökéletes (ehhez lásd az erről szóló kérdéseket). Először is, sajtóhelyreigazításnak csak a legdrasztikusabb esetekben van helye (valótlan tény állítása, valótlan tény híresztelése, való tény hamis színben feltüntetése). Milliónyi egyéb lehetőség van hamis állításokat sugallani: sejtetés, utalás, „csúsztatás”, véleménybe csomagolás, pláne lehet egész egyszerűen elhallgatni híreket, vagy hírek részeit stb. stb. Helyreigazítás tehát csak a legdurvább, ténybeli hamisítások esetén jöhet szóba, talán úgy lehetne mondani, hogy ami itt, a listámban megjelenik, az a magyar sajtó hamisításai kapcsán a <i>jéghegy csúcsa</i>. A második probléma, hogy a helyreigazítás közlése nem valamiféle automatizmus: ehhez egyrészt a hamisítás célpontjának észlelnie kell a közlést, másrészt, és ez a még sokkal nagyobb gát, el kell indítania az eljárást. Ez messze nem triviális: levelet kell írni, beadványt kell szerkeszteni, ügyvédet kell fogadni, adott esetben bíróságra kell járni stb. stb., ez mind idő, energia, pénz – még akkor is, ha a helyreigazítás tökéletesen megalapozott! Egy-két állításnál talán ez nem érdemi probléma, de vannak példák az adatbázisomban arra, hogy ugyanazon politikus kapcsán gyakorlatilag naponta, kétnaponta jelentek meg újabb és újabb hamis állítások, heteken keresztül, több tucat sajtótermékben. Simán előfordulhat, hogy valakinek nincs kapacitása mindegyik ilyennél elindítania és végigvinnie a helyreigazítási eljárást. Ráadásul gyakran előfordul, amire korábban is utaltam, hogy ezeket a hamis cikkeket tömegével szemlézik más sajtótermékek, ahol így szintén meg fog ugyanaz a hamis állítás jelenni, akár több tucat vagy több száz helyen, ezeket pláne reménytelen feladat lehet mind helyreigazíttatni (bár a vázolt módon igyekeztem ezekről is információt gyűjteni).</p>
+			<p><b>Mi a garancia arra, hogy nem maradt ki jóhiszeműen egy helyreigazítás, mondjuk mert a fenti keresésekkel sem bukkant fel?</b></p>
+			<p>Semmi, és bár azt gondolom, hogy a fenti keresési stratégia elég alapos, a lehetőség tényleg ott van. Az nem tűnik túl valószínűnek, hogy felvettem valamit az adatbázisba helyreigazításként, ami igazából nem az, de az sokkal könnyebben előfordulhat, hogy valami kimaradt (ezért is mondtam korábban, hogy az mondható, hogy ez egyfajta minimum). Pontosan ez az oka annak, hogy megköszönöm, sőt, kimondottan bátorítom, ha valaki beküld egy listán nem szereplő helyreigazítást, ez esetben kiegészítem vele az adatbázist. Az adatbázis mérete hatalmas, amit egymagam gyűjtöttem össze, apró darabokban mikor épp mennyi szabad időm jutott rá, úgyhogy szinte biztosan fel kell készülni elírásokra, figyelmetlenségből adódó tévedésekre is; ezek jelzését is nagyon megköszönöm.</p>
+			<p>Fontos azt is hangsúlyoznom, hogy csak az adatbázisban ’elkészült’-ként megjelölt portálokról gondolom, hogy legyűjtöttem az összes helyreigazítást, a többinél erről természetesen nincs szó, azok folyamatban vannak.</p>
+			<p><b>Mi a garancia arra, hogy nem maradt ki rosszhiszeműen egy helyreigazítás, mondjuk, hogy jobb színben tűnjön fel egy újság?</b></p>
+			<p>Erre mindössze egyetlen garancia van: az, hogy ha így tettem volna, akkor könnyen utolérhető lennék. Hiszen ott lenne a helyreigazítás, ami egy pillanat alatt ellenőrizhető módon nem szerepel a listámban, és az, hogy ha valaki ezt jelzi felém és valamiért továbbra sem vagyok hajlandó felvenni a listára.</p>
+			<p><b>Hol érhetőek el a nyers adatok?</b></p>
+			<p>Valamennyi adat elérhető nyers formában a weboldal mögötti Github-oldalamon:</p>
+			<p>A transzparencia jegyében itt nem csak az adatok érhetőek el, hanem a weboldal teljes forráskódja is, amit bárki letölthet. Ezt egyébként nem csak a transzparencia miatt tartom fontosnak: ha elmegy a kedvem az egésztől, megunom az adatok frissítését, elüt egy autó stb. akkor így a projekt minden probléma nélkül továbbfolytatható más által.</p>
+			<p><b>Ki van az egész oldal mögött? Hogy merült fel egy ilyen adatbázis legyűjtésének a gondolata?</b></p>
+			<p>Ferenci Tamásnak <a href="http://www.medstat.hu/" target = "_blank" rel = "noopener">hívnak</a>, egyébként biostatisztikusként dolgozom, tehát ha a helyreigazításokhoz nincs is „hivatalból” közöm, az adatok és feldolgozásuk nem áll távol tőlem. Azon túl, hogy újságolvasó állampolgárként érdekelt a téma, az is könnyítette a helyzetemet, hogy az ilyen internetről történő adatleszedések közel állnak hozzám, ezért már több hasonló projektet csináltam, amikből származtak tapasztalataim, a <a href="https://github.com/tamas-ferenci/MagyarorszagKozutiElerhetoseg" target = "_blank" rel = "noopener">magyar települések közúti elérhetőségétől</a> a Kinizsi Száz teljesítménytúra <a href="https://github.com/tamas-ferenci/K100Statisztika" target = "_blank" rel = "noopener">teljesítési adatain</a> át a MÁV-vonatok <a href="http://www.medstat.hu/anyagok/FerenciTamasNagyMAVSebessegStatisztika.pdf" target = "_blank" rel = "noopener">sebességéig</a> és a kórházak <a href="https://github.com/tamas-ferenci/KorhazakTeruletiEllatasiKotelezettsege" target = "_blank" rel = "noopener">területi ellátási kötelezettségéig</a>.</p>
+			<p>Mindazonáltal fontos hangsúlyozni, hogy az egészet hobbiból, szabadidőmben csináltam (ráadásul nem is értek mindenhez, például a webes dolgokhoz egyáltalán nem – a weboldal ezért néz ki úgy, ahogy, elnézést érte!), ezért is hangsúlyoztam lépten-nyomon, hogy minden hibajavítást, kiegészítést örömmel veszek.</p>
+		</div>
+		</div>
+		</div>
+		</div>
+		</div> 
+	</body>
+</html>
