@@ -25,10 +25,10 @@
 	<link rel="canonical" href="https://www.helyreigazitas-figyelo.hu/" />
 	
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css"/>
-	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/jq-3.6.0/dt-1.13.1/sp-2.1.0/sl-1.5.0/datatables.min.css"/>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/jq-3.6.0/dt-1.13.1/r-2.4.0/sp-2.1.0/sl-1.5.0/datatables.min.css"/>
 	
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-	<script type="text/javascript" src="https://cdn.datatables.net/v/bs5/jq-3.6.0/dt-1.13.1/sp-2.1.0/sl-1.5.0/datatables.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/v/bs5/jq-3.6.0/dt-1.13.1/r-2.4.0/sp-2.1.0/sl-1.5.0/datatables.min.js"></script>
 	<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.13.1/sorting/diacritics-sort.js"></script>
 	
 	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -44,6 +44,7 @@
 	}
 	#example tr.dt-hasChild > td:nth-child(1) {
 		font-weight: bold;
+		height: 40px;
 	}
 	</style>
 	
@@ -54,7 +55,7 @@
 					Object.assign(...Object.keys(obj)
 									.filter( key => predicate(obj[key]) )
 									.map( key => ({ [key]: obj[key] }) ) );
-									
+	
 	function keseskiiro(numberOfDays) {
 		var years = Math.floor(numberOfDays / 365.242199);
 		var months = Math.floor(numberOfDays % 365.242199 / 30.43692);
@@ -65,71 +66,7 @@
 		displaytext = displaytext + (months > 0 ? ( (displaytext!='' ? ', ' : '') + months + ' hónap') : '');
 		displaytext = displaytext + (days > 0 ? ( (displaytext!='' ? ', ' : '') + days + ' nap') : '');
 		return displaytext=='' ?  Math.round(hours) + ' óra' : displaytext;
-	}
-									
-	function format(d) {
-	 
-		var str = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
-			'<tr>' +
-			'<td>Helyreigazítás szövege:</td>' +
-			'<td>' +
-			d.HelyreigazitasSzoveg +
-			'</td>' +
-			'</tr>' +
-			'<tr>' +
-			'<td>Címkék:</td>' +
-			'<td>' +
-			d.Cimkek.map(a => a.CimkeSzoveg).join(', ') +
-			'</td>' +
-			'</tr>' +
-			'<tr>' +
-			'<td>Cikk URL:</td>' +
-			'<td>' +
-			'<a target = "_blank" rel = "noopener" href="' + d.CikkURL + '">' + d.CikkURL + '</a> (<a target = "_blank" rel = "noopener" href="https://web.archive.org/web/*/' + d.CikkURL + '">archivált link</a>)' +
-			', helyreigazítás jelölve: ' + (d.HelyreigazitasJelolve=='NA' ? 'Nem ismert' : (d.HelyreigazitasJelolve==1 ? 'Igen' : 'Nem')) +
-			'</td>' +
-			'</tr>' +
-			'<tr>' +
-			'<td>Helyreigazítás URL:</td>' +
-			'<td>' +
-			(d.HelyreigazitasURL=='' ? 'Nincs külön helyreigazító cikk' : '<a target = "_blank" rel = "noopener" href="' + d.HelyreigazitasURL + '">' + d.HelyreigazitasURL + '</a> (<a target = "_blank" rel = "noopener" href="https://web.archive.org/web/*/' + d.HelyreigazitasURL + '">archivált link</a>)') +
-			'</td>' +
-			'</tr>' +
-			'<tr>' +
-			'<td>Hivatkozások:</td>' +
-			'<td>';
-		if(d.Hivatkozasok.length>0) {
-			str +=
-				'<div class="accordion" id="accordionExample">' +
-				'<div class="accordion-item">' +
-				'<h2 class="accordion-header" id="heading' + d.HelyreigazitasID + '">' +
-				'<button class="accordion-button" type="button" ' +
-				'data-bs-toggle="collapse" data-bs-target="#collapse' + d.HelyreigazitasID +
-				'" aria-expanded="false" aria-controls="collapse' + d.HelyreigazitasID +'">' +
-				'Hivatkozások száma: ' + d.Hivatkozasok.length +
-				'</button>' +
-				'</h2>' +
-				'<div id="collapse' + d.HelyreigazitasID + '" class="accordion-collapse" ' +
-				'aria-labelledby="heading' + d.HelyreigazitasID + '" data-bs-parent="#accordionExample">' +
-				'<div class="accordion-body">' +
-				'<table><thead><tr><th>Sajtótermék</th><th>Cím</th><th>URL</th></tr></thead>';
-			
-			for (i = 0; i < d.Hivatkozasok.length; i++) {
-				str += '<tr><td>' + d.Hivatkozasok[i].SajtotermekNev + '</td><td>' + d.Hivatkozasok[i].HivatkozasCim + '</td><td><a target = "_blank" rel = "noopener" href="' + d.Hivatkozasok[i].HivatkozasURL + '">' + d.Hivatkozasok[i].HivatkozasURL + '</a></td></tr>';
-			}
-			
-			str +=
-				'</table>' +
-				'</div></div></div></div>';
-			} else str += 'Nincs hivatkozó oldal';   
-			
-			str = str +
-			'</td>' +
-			'</tr>' +
-			'</table>';
-
-		return (str);
-	}
+	}	
 	
 	function createYearCikkDatum(year) {
 		return {
@@ -159,7 +96,13 @@
 	$(document).ready(function () {
 		var dt = $('#example').DataTable({
 		ajax: 'helyreigazitasok.json',
-		responsive: true,
+		responsive: {
+			details: {
+				display: $.fn.dataTable.Responsive.display.childRowImmediate,
+				type: 'none',
+				target: ''
+			}
+		},
 		columns: [
 			{ data: 'SajtotermekNev' },
 			{ data: 'CikkDatum' },
@@ -174,6 +117,55 @@
 					   return (data=='NA' ? '' : keseskiiro(data));
 					else
 					   return Number(data);
+			    }
+			},
+			{ data: 'HelyreigazitasSzoveg' },
+			{
+				data: 'Cimkek',
+				render: function ( data, type, row, meta ) {
+					return data.map(a => a.CimkeSzoveg).join(', ');
+			    }
+			},
+			{
+				data: 'CikkURL',
+				render: function ( data, type, row, meta ) {
+					return '<a target = "_blank" rel = "noopener" href="' + data + '">' + data + '</a> (<a target = "_blank" rel = "noopener" href="https://web.archive.org/web/*/' + data + '">archivált link</a>)' +
+					', helyreigazítás jelölve: ' + (row.HelyreigazitasJelolve=='NA' ? 'Nem ismert' : (row.HelyreigazitasJelolve==1 ? 'Igen' : 'Nem'));
+			    }
+			},
+			{
+				data: 'HelyreigazitasURL',
+				render: function ( data, type, row, meta ) {
+					return (data=='' ? 'Nincs külön helyreigazító cikk' : '<a target = "_blank" rel = "noopener" href="' + data + '">' + data + '</a> (<a target = "_blank" rel = "noopener" href="https://web.archive.org/web/*/' + data + '">archivált link</a>)');
+			    }
+			},
+			{
+				data: 'Hivatkozasok',
+				render: function ( data, type, row, meta ) {
+					var str='';
+					if(data.length>0) {
+						str +=
+							'<div class="accordion" id="accordionExample">' +
+							'<div class="accordion-item">' +
+							'<h2 class="accordion-header" id="heading' + row.HelyreigazitasID + '">' +
+							'<button class="accordion-button" type="button" ' +
+							'data-bs-toggle="collapse" data-bs-target="#collapse' + row.HelyreigazitasID +
+							'" aria-expanded="false" aria-controls="collapse' + row.HelyreigazitasID +'">' +
+							'Hivatkozások száma: ' + data.length +
+							'</button>' +
+							'</h2>' +
+							'<div id="collapse' + row.HelyreigazitasID + '" class="accordion-collapse" ' +
+							'aria-labelledby="heading' + row.HelyreigazitasID + '" data-bs-parent="#accordionExample">' +
+							'<div class="accordion-body">' +
+							'<table><thead><tr><th>Sajtótermék</th><th>Cím</th><th>URL</th></tr></thead>';
+						
+						for (i = 0; i < data.length; i++) {
+							str += '<tr><td>' + data[i].SajtotermekNev + '</td><td>' + data[i].HivatkozasCim + '</td><td><a target = "_blank" rel = "noopener" href="' + data[i].HivatkozasURL + '">' + data[i].HivatkozasURL + '</a></td></tr>';
+						}
+						
+						str += '</table></div></div></div></div>';
+					} else str += 'Nincs hivatkozó oldal';   
+					return (str);
 			    }
 			}
 		],
@@ -312,15 +304,7 @@
 		pageLength: 50,
 		language: {
 			url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/hu.json'
-		},
-		initComplete: function () {
-				this.api().rows().every(function(){
-					if(!this.child.isShown()){
-						this.child(format(this.data())).show();
-						$(this.node()).addClass('shown');
-					}
-				});
-			}
+		}
 		});
 	});	
 	</script>
@@ -359,7 +343,7 @@
 		
 		<div class="tab-content" id="myTabContent">
 		  <div class="tab-pane fade show active" id="tabDB" role="tabpanel" aria-labelledby="tabDB-tab">
-			<table id="example" class="table">
+			<table id="example" width="100%">
 				<thead>
 					<tr>
 						<th>Sajtótermék</th>
@@ -369,6 +353,11 @@
 						<th>Helyreigazítás dátuma</th>
 						<th>Helyreigazítás időpontja</th>
 						<th>Helyreigazítás késése</th>
+						<th class="none">Helyreigazítás szövege:</th>
+						<th class="none">Címkék:</th>
+						<th class="none">Cikk URL:</th>
+						<th class="none">Helyreigazítás URL:</th>
+						<th class="none">Hivatkozások:</th>
 					</tr>
 				</thead>
 				<tfoot>
@@ -380,6 +369,11 @@
 						<th>Helyreigazítás dátuma</th>
 						<th>Helyreigazítás időpontja</th>
 						<th>Helyreigazítás késése</th>
+						<th class="none">Helyreigazítás szövege:</th>
+						<th class="none">Címkék:</th>
+						<th class="none">Cikk URL:</th>
+						<th class="none">Helyreigazítás URL:</th>
+						<th class="none">Hivatkozások:</th>
 					</tr>
 				</tfoot>
 			</table>
