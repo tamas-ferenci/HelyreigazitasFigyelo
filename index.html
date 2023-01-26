@@ -420,16 +420,7 @@
 					},
 					xaxis: {
 						title: 'Címke gyakorisága [db]'
-					},
-					annotations: [{
-						text: "helyreigazitas-figyelo.hu",
-						showarrow: false,
-						align: 'center',
-						x: 0,
-						y: -0.05,
-						xref: 'paper',
-						yref: 'paper'
-					  }]
+					}
 				  };
 				  
 				Plotly.newPlot('plotlyDivCimkek', data, layout, config);
@@ -497,16 +488,7 @@
 							]},
 						rangeslider: {range: ['2018-01-01', '2022-12-31']},
 						type: 'date'
-						},
-						annotations: [{
-							text: "helyreigazitas-figyelo.hu",
-							showarrow: false,
-							align: 'center',
-							x: 0,
-							y: -0.05,
-							xref: 'paper',
-							yref: 'paper'
-						}]
+						}
 					};
 				Plotly.newPlot('plotlyDivCimkekIdoben', data, layout, config);
 				});
@@ -561,16 +543,7 @@
 						},
 						xaxis: {
 							title: 'Jelölt cikk aránya [%]'
-						},
-						annotations: [{
-							text: "helyreigazitas-figyelo.hu",
-							showarrow: false,
-							align: 'center',
-							x: 0,
-							y: -0.05,
-							xref: 'paper',
-							yref: 'paper'
-						}]
+						}
 					  };
 					  
 					Plotly.newPlot('plotlyDivJeloles', res, layout, config);
@@ -608,16 +581,7 @@
 						},
 						xaxis: {
 							title: 'Késés időtartama [év]'
-						},
-						annotations: [{
-							text: "helyreigazitas-figyelo.hu",
-							showarrow: false,
-							align: 'center',
-							x: 0,
-							y: -0.05,
-							xref: 'paper',
-							yref: 'paper'
-						}]
+						}
 					  };
 					  
 					Plotly.newPlot('plotlyDivKeses', res, layout, config);
