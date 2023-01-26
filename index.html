@@ -129,7 +129,7 @@
 			{
 				data: 'CikkURL',
 				render: function ( data, type, row, meta ) {
-					return '<p style="word-break:break-all;"><a target = "_blank" rel = "noopener" href="' + data + '">' + data + '</a></p> (<a target = "_blank" rel = "noopener" href="https://web.archive.org/web/*/' + data + '">archivált link</a>)' +
+					return '<span style="word-break:break-all;"><a target = "_blank" rel = "noopener" href="' + data + '">' + data + '</a></span> (<a target = "_blank" rel = "noopener" href="https://web.archive.org/web/*/' + data + '">archivált link</a>)' +
 					', helyreigazítás jelölve: ' + (row.HelyreigazitasJelolve=='NA' ? 'Nem ismert' : (row.HelyreigazitasJelolve==1 ? 'Igen' : 'Nem'));
 			    }
 			},
@@ -160,7 +160,7 @@
 							'<table><thead><tr><th>Sajtótermék</th><th>Cím</th><th>URL</th></tr></thead>';
 						
 						for (i = 0; i < data.length; i++) {
-							str += '<tr><td>' + data[i].SajtotermekNev + '</td><td>' + data[i].HivatkozasCim + '</td><td><p style="word-break:break-all;"><a target = "_blank" rel = "noopener" href="' + data[i].HivatkozasURL + '">' + data[i].HivatkozasURL + '</a></p></td></tr>';
+							str += '<tr><td>' + data[i].SajtotermekNev + '</td><td>' + data[i].HivatkozasCim + '</td><td><span style="word-break:break-all;"><a target = "_blank" rel = "noopener" href="' + data[i].HivatkozasURL + '">' + data[i].HivatkozasURL + '</a></span></td></tr>';
 						}
 						
 						str += '</table></div></div></div></div>';
