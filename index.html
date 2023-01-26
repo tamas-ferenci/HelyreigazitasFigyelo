@@ -34,6 +34,8 @@
 	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.43.0/plotly-locale-hu.js"></script>
 	<script>Plotly.setPlotConfig({locale: 'hu'})</script>
+		
+	<script src="https://code.highcharts.com/highcharts.js"></script>
 	
 	<style>
 	#example tbody tr.odd {
@@ -49,7 +51,49 @@
 	a {
 		word-break:break-all;
 	}
+	#container {
+		height: 80%;
+		width: 80%;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+	}
 	</style>
+		
+	<script>
+	Highcharts.setOptions({
+    		lang: {
+			contextButtonTitle: 'Helyi menü',
+			exitFullscreen: 'Kilépés a teljes képernyős módból',
+			hideData: 'Adatok elrejtése',
+            		loading: 'Betöltés...',
+			mainBreadcrumb: 'Fő ábra',
+			noData: 'Nincs megjeleníthető adat',
+			printChart: 'Ábra nyomtatása',
+			viewData: 'Adatok megtekintése',
+			viewFullscreen: 'Teljes képernyős nézet',
+            		months: ['január', 'február', 'március', 'április', 'május','június', 'július', 'augusztus', 'szeptember', 'október', 'november', 'december'],
+            		shortMonths:  ['jan', 'febr', 'márc', 'ápr', 'máj', 'jún', 'júl', 'aug', 'szept', 'okt', 'nov', 'dec'],
+            		weekdays: ['vasárnap', 'hétfő', 'kedd', 'szerda', 'csütörtök', 'péntek', 'szombat'],
+			shortWeekdays: ['Vas', 'Hét', 'Ked', 'Sze', 'Csü', 'Pén', 'Szo', 'Vas'],
+			exportButtonTitle: "Exportál",
+			printButtonTitle: "Importál",
+			rangeSelectorFrom: "ettől",
+			rangeSelectorTo: "eddig",
+			rangeSelectorZoom: "mutat:",
+			downloadPNG: 'Letöltés PNG képként',
+			downloadJPEG: 'Letöltés JPEG képként',
+			downloadPDF: 'Letöltés PDF dokumentumként',
+			downloadSVG: 'Letöltés SVG formátumban',
+			downloadCSV: 'Letöltés CSV formátumú táblázatként',
+			downloadXLS: 'Letöltés XLS formátumú táblázatként',
+            		resetZoom: "Nagyítás alaphelyzetbe állítása",
+            		resetZoomTitle: "Nagyítás alaphelyzetbe állítása",
+            		thousandsSep: " ",
+            		decimalPoint: ','     
+        	}        
+	});
+	</script>
 	
 	<script type="text/javascript" src="cimkek.js"></script>
 	
@@ -395,10 +439,54 @@
 			<input class="form-check-input" type="checkbox" id="partokisCimkek" onChange="makeplotCimkek();"/>
 			<label class="form-check-label" for="partokisCimkek">Politikai pártok is szerepeljenek</label>
 		</div>
-		<div id="plotlyDivCimkek" style="height: 75vh; width: 90vw"></div>
-		<script>		
+		<figure class="highcharts-figure" style="height: 75vh; width: 90vw">
+			<div id="container"></div>
+		</figure>
+		<script>
 		function makeplotCimkek() {
-			Plotly.d3.json('helyreigazitasok.json', function(data) {
+			var options = {
+				chart: {
+					type: 'bar'
+				},
+				title: {
+					text: 'Adott témában született helyreigazítások száma, 2008-2022',
+					align: 'left'
+				},
+				subtitle: {
+					text: 'helyreigazitas-figyelo.hu',
+					align: 'left'
+				},
+				xAxis: {
+					categories: [],
+					reversed: true,
+					type: "category",
+					labels: {
+						format: "{value}"
+					}
+				},
+				yAxis: {
+					title: {
+						text: 'Címke gyakorisága [db]'
+					}
+				},
+				plotOptions: {
+					bar: {
+						dataLabels: {
+							enabled: true
+						}
+					}
+				},
+				legend: {
+					enabled: false
+				},
+				series: [{
+					dataSorting: {
+						enabled: true
+					}
+				}]
+			};
+			
+			$.getJSON('helyreigazitasok.json', function(data) {
 				var tabres = data.data.map(x => x.Cimkek).flat();
 				tabres = Object.filter(tabres, value => value.PolitikaiPart <= document.getElementById('partokisCimkek').checked);
 				tabres = Object.entries(tabres).map(x => x[1].CimkeSzoveg);
@@ -407,30 +495,12 @@
 				}, {});
 				tabres = Object.filter(tabres, value => value >= document.getElementById('minhelyreigCimkek').value);
 				tabres = Object.entries(tabres).sort((a, b) => a[1] - b[1]);
-				
-				var data = [{
-					type: 'bar',
-					x: tabres.map(x => x[1]), 
-					y: tabres.map(x => x[0]),
-					orientation: 'h'
-				  }];
-				  var config = {responsive: true};
-				  var layout = {
-					title: 'Adott témában született helyreigazítások száma',
-					yaxis: {
-						automargin: true,
-						dtick: 1
-					},
-					xaxis: {
-						title: 'Címke gyakorisága [db]'
-					}
-				  };
-				  
-				Plotly.newPlot('plotlyDivCimkek', data, layout, config);
+				options.series[0].name = 'Helyreigazítások száma';
+				options.series[0].data = tabres;
+				var chart = new Highcharts.Chart('container', options);
 			});
 		};
-		
-		makeplotCimkek();
+		makeplotCimkek();		
 		</script>
 		</div>
 		<div class="tab-pane fade" id="tabVizCimkekIdoben" role="tabpanel" aria-labelledby="tabVizCimkekIdoben-tab">
