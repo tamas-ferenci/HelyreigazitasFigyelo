@@ -52,13 +52,6 @@
 	a {
 		word-break:break-all;
 	}
-	#container {
-		height: 80%;
-		width: 80%;
-		display: block;
-		margin-left: auto;
-		margin-right: auto;
-	}
 	</style>
 		
 	<script>
@@ -440,8 +433,8 @@
 			<input class="form-check-input" type="checkbox" id="partokisCimkek" onChange="makeplotCimkek();"/>
 			<label class="form-check-label" for="partokisCimkek">Politikai pártok is szerepeljenek</label>
 		</div>
-		<figure class="highcharts-figure" style="height: 75vh; width: 90vw">
-			<div id="container"></div>
+		<figure class="highcharts-figure">
+			<div id="containerCimkek" style="height: 70vh; width: 75vw"></div>
 		</figure>
 		<script>
 		function makeplotCimkek() {
@@ -499,7 +492,7 @@
 				tabres = Object.entries(tabres).sort((a, b) => a[1] - b[1]);
 				options.series[0].name = 'Helyreigazítások száma';
 				options.series[0].data = tabres;
-				var chart = new Highcharts.Chart('container', options);
+				var chart = new Highcharts.Chart('containerCimkek', options);
 			});
 		};
 		makeplotCimkek();		
@@ -586,10 +579,67 @@
 				<input class="form-check-input" type="checkbox" checked id="csakkeszJeloles" onChange="makeplotJeloles();">
 				<label class="form-check-label" for="csakkeszJeloles">Csak azok a sajtótermékek szerepeljenek, amelyeknek befejeződött a legyűjtése</label>
 			</div>
-			<div id="plotlyDivJeloles" style="height: 75vh; width: 90vw"></div>
-			<script>		
+			<figure class="highcharts-figure">
+				<div id="containerJeloles" style="height: 70vh; width: 75vw"></div>
+			</figure>
+			<script>
 			function makeplotJeloles() {
-			Plotly.d3.json('helyreigazitasok.json', function(data) {
+				var options = {
+					chart: {
+						type: 'bar'
+					},
+					title: {
+						text: 'Helyreigazítások jelöltségének aránya, 2008-2022',
+						align: 'left'
+					},
+					subtitle: {
+						text: 'helyreigazitas-figyelo.hu',
+						align: 'left'
+					},
+					xAxis: {
+						categories: [],
+						reversed: true,
+						type: "category",
+						labels: {
+							format: "{value}",
+							step: 1
+						}
+					},
+					yAxis: {
+						max: 100,
+						title: {
+							text: 'Jelölt cikk aránya [%]'
+						},
+						stackLabels: {
+							enabled: true,
+							format: '{total:.1f}'
+						  }
+					},
+					tooltip: {
+						formatter: function () {
+							var string = '<i>' + this.key + '</i><br>Jelölt cikkek aránya: ' + Math.round(this.y*10)/10 + '%<br>Helyreigazítások száma: ' + this.point.OsszHelyreigazitas + ', ebből jelölve: ' + this.point.Jelolt;
+							return string;
+						}
+					},
+					plotOptions: {
+						bar: {
+							stacking: 'normal',
+							dataLabels: {
+								enabled: false
+							}
+						}
+					},
+					legend: {
+						enabled: false
+					},					
+					series: [{
+						dataSorting: {
+							enabled: true
+						}
+					}]
+				};
+				
+				$.getJSON('helyreigazitasok.json', function(data) {
 					var res = Object.values(data.data.reduce(function(m, d){						
 						if(!m[d.SajtotermekNev]){
 						  m[d.SajtotermekNev] = {...d, ossz: d.HelyreigazitasJelolve=='NA' ? 0 : 1, jelolt: d.HelyreigazitasJelolve=='NA' ? 0 : 1};						  
@@ -598,34 +648,17 @@
 						m[d.SajtotermekNev].jelolt += d.HelyreigazitasJelolve=='NA' ? 0 : d.HelyreigazitasJelolve;
 						m[d.SajtotermekNev].ossz += d.HelyreigazitasJelolve!='NA';
 						return m;
-					 },{})).map(function(x) {return {SajtotermekNev: x.SajtotermekNev, KeszVan: x.KeszVan, OsszHelyreigazitas: x.ossz, Jelolt: x.jelolt, Arany: x.jelolt/x.ossz};});
-					 res = res.filter(value => value.KeszVan >= document.getElementById('csakkeszJeloles').checked);
-					 res = res.filter(value => value.OsszHelyreigazitas >= document.getElementById('minhelyreigJeloles').value);
-					 res = res.sort((a, b) => a.Arany - b.Arany);
-					 res = [{
-						type: 'bar',
-						x: res.map(x => x.Arany*100),
-						y: res.map(x => x.SajtotermekNev),
-						text: res.map(x => 'Helyreigazítások száma: ' + x.OsszHelyreigazitas + ', ebből jelölve: ' + x.Jelolt),
-						orientation: 'h'
-					  }];
-					  var config = {responsive: true};
-					  var layout = {
-						title: 'Helyreigazítások jelöltségének aránya',
-						yaxis: {
-							automargin: true,
-							dtick: 1
-						},
-						xaxis: {
-							title: 'Jelölt cikk aránya [%]'
-						}
-					  };
-					  
-					Plotly.newPlot('plotlyDivJeloles', res, layout, config);
+					},{})).map(function(x) {return {SajtotermekNev: x.SajtotermekNev, KeszVan: x.KeszVan, OsszHelyreigazitas: x.ossz, Jelolt: x.jelolt, Arany: x.jelolt/x.ossz};});
+					res = res.filter(value => value.KeszVan >= document.getElementById('csakkeszJeloles').checked);
+					res = res.filter(value => value.OsszHelyreigazitas >= document.getElementById('minhelyreigJeloles').value);
+					res = res.sort((a, b) => a.Arany - b.Arany);
+					res = res.map(a => { return {name: a.SajtotermekNev, x: a.x, y: a.Arany*100, OsszHelyreigazitas: a.OsszHelyreigazitas, Jelolt: a.Jelolt}});					
+					options.series[0].name = 'Jelölt cikk aránya';
+					options.series[0].data = res;
+					var chart = new Highcharts.Chart('containerJeloles', options);
 				});
 			};
-
-			makeplotJeloles();
+			makeplotJeloles();		
 			</script>
 		</div>
 		<div class="tab-pane fade" id="tabVizKeses" role="tabpanel" aria-labelledby="tabVizKeses-tab">
