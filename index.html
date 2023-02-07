@@ -662,40 +662,79 @@
 			</script>
 		</div>
 		<div class="tab-pane fade" id="tabVizKeses" role="tabpanel" aria-labelledby="tabVizKeses-tab">
-			<p>Ez az ábra szemlélteti azt, hogy az egyes helyreigazítások mennyivel a helyreigazított cikk közlése után jelentek meg. Az ábrán minden pont egy ilyen "késés"; a függőleges tengely mutatja a sajtóterméket, a vízszintes a késés idejét, évben mérve. Egy pontra ráállva megjelenik a cikk címe, illetve a cikk és a helyreigazítás megjelenésének az időpontja. Az ábrán egérrel kijelölve egy területet arra ránagyít (ebből dupla kattintással lehet kilépni, visszatérve a teljes ábrára). Az ábra jobb felső sarkán elérhetőek a további opciók, beleértve az ábra letöltését. Beállítható, hogy csak a teljesen feldolgozott sajtótermékek jelenjenek-e meg.</p>
+			<p>Ez az ábra szemlélteti azt, hogy az egyes helyreigazítások mennyivel a helyreigazított cikk közlése után jelentek meg. Az ábrán minden pont egy ilyen "késés"; a függőleges tengely mutatja a sajtóterméket, a vízszintes a késés idejét, évben mérve. Egy pontra ráállva megjelenik a cikk címe, illetve a cikk és a helyreigazítás megjelenésének az időpontja. Az ábra jobb felső sarkán elérhetőek a további opciók, beleértve az ábra letöltését. Beállítható, hogy csak a teljesen feldolgozott sajtótermékek jelenjenek-e meg.</p>
 			<div class="form-check">
 				<input class="form-check-input" type="checkbox" checked id="csakkeszKeses" onChange="makeplotKeses();">
 				<label class="form-check-label" for="csakkeszKeses">Csak azok a sajtótermékek szerepeljenek, amelyeknek befejeződött a legyűjtése</label>
 			</div>
-			<div id="plotlyDivKeses" style="height: 75vh; width: 90vw"></div>
-			<script>		
+			<figure class="highcharts-figure">
+				<div id="containerKeses" style="height: 70vh; width: 75vw"></div>
+			</figure>			
+			<script>
 			function makeplotKeses() {
-			Plotly.d3.json('helyreigazitasok.json', function(data) {					
+				var options = {
+					chart: {
+						type: 'scatter'
+					},
+					title: {
+						text: 'Helyreigazítások késésének eloszlása, 2008-2022',
+						align: 'left'
+					},
+					subtitle: {
+						text: 'helyreigazitas-figyelo.hu',
+						align: 'left'
+					},
+					yAxis: {
+						reversed: true,
+						type: "category",
+						title: '',
+						labels: {
+							format: "{value}",
+							step: 1
+						}
+					},
+					xAxis: {
+						title: {
+							text: 'Késés időtartama [év]'
+						}
+					},
+					tooltip: {
+						formatter: function () {
+							console.log(this);
+							var string = 'Cím: ' + this.point.CikkCim + '<br>Cikk megjelent: ' + this.point.CikkDatum + ', helyreigazítás megjelent: ' + this.point.HelyreigazitasDatum;
+							return string;
+						}
+					},
+					plotOptions: {
+						scatter: {
+							jitter: {
+								y: 0.25,
+								x: 0
+							}
+						}
+					},
+					legend: {
+						enabled: false
+					}
+				};
+				
+				$.getJSON('helyreigazitasok.json', function(data) {
 					var res = Object.filter(data.data, value => value.KeszVan >= document.getElementById('csakkeszKeses').checked);					
 					res = Object.filter(res, value => value.Keses!='NA');
-					res = [{
-						type: 'scatter',
-						mode: 'markers',
-						x: Object.values(res).map(x => x.Keses/365),
-						y: Object.values(res).map(x => x.SajtotermekNev),
-						text: Object.values(res).map(x => 'Cím: ' + x.CikkCim + '<br>Cikk megjelent: ' + x.CikkDatum + ', helyreigazítás megjelent: ' + x.HelyreigazitasDatum)
-					  }];
-					  var config = {responsive: true};
-					  var layout = {
-						title: 'Helyreigazítások késésének eloszlása',
-						yaxis: {
-							automargin: true,
-							dtick: 1
-						},
-						xaxis: {
-							title: 'Késés időtartama [év]'
-						}
-					  };
-					  
-					Plotly.newPlot('plotlyDivKeses', res, layout, config);
+					res = Object.values(res).map(a => {return {Keses: a.Keses/365, name: a.SajtotermekNev, CikkCim: a.CikkCim, CikkDatum: a.CikkDatum, HelyreigazitasDatum: a.HelyreigazitasDatum}});
+					var uniqueNames = [...new Set(res.map(x => x.name))];
+					var temp = Array(uniqueNames.length);
+					for (var i = 0; i<uniqueNames.length; i++) {
+						temp[i] = {
+							name: uniqueNames[i],
+							data: res.filter(x => x.name==uniqueNames[i]).map(a => {return{x: a.Keses, y: i, CikkCim: a.CikkCim, CikkDatum: a.CikkDatum, HelyreigazitasDatum: a.HelyreigazitasDatum}})
+						};
+					}
+					options.series = temp;
+					options.yAxis.categories = uniqueNames;
+					var chart = new Highcharts.Chart('containerKeses', options);
 				});
 			};
-
 			makeplotKeses();
 			</script>
 		</div>
