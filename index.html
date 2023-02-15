@@ -754,7 +754,7 @@
 			<img id = "szofelhoImg"/>			
 				
 			<script>
-			$.getJSON("wordclouds.json", function (data) {				
+			$.getJSON("szofelhok.json", function (data) {				
 				  $.each(data, function (key, entry) {
 					$('#sajtotermekSzofelho').append($('<option></option>').attr('value', entry.SajtotermekNev).text(entry.SajtotermekNev));
 				  })
@@ -763,7 +763,7 @@
 			
 			<script>
 			function makeplotSzofelho() {
-				$.getJSON("wordclouds.json", function (data) {	
+				$.getJSON("szofelhok.json", function (data) {	
 					$("#szofelhoImg").attr("src", data.filter(value => value.SajtotermekNev == document.getElementById('sajtotermekSzofelho').value).map(value => value.Img));
 				})
 			}
