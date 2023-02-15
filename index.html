@@ -371,10 +371,11 @@
 		  <li class="nav-item dropdown" role="presentation">
 			<button class="nav-link dropdown-toggle" id="tabViz-tab" data-bs-toggle="dropdown" data-bs-target="#tabViz" type="button" role="tab" aria-selected="false"  aria-expanded="false">Vizualizációk</button>
 			<ul class="dropdown-menu">
-			  <li><button class="dropdown-item" id="tabVizCimkek-tab" data-bs-toggle="tab" data-bs-target="#tabVizCimkek" type="button" role="tab" aria-controls="tabVizCimkek" aria-selected="false" aria-expanded="false">Címkék gyakorisága</button></li>
-			  <li><button class="dropdown-item" id="tabVizCimkekIdoben-tab" data-bs-toggle="tab" data-bs-target="#tabVizCimkekIdoben" type="button" role="tab" aria-controls="tabVizCimkekIdoben" aria-selected="false" aria-expanded="false">Címkék gyakorisága időben</button></li>
-			  <li><button class="dropdown-item" id="tabVizJeloles-tab" data-bs-toggle="tab" data-bs-target="#tabVizJeloles" type="button" role="tab" aria-controls="tabVizJeloles" aria-selected="false" aria-expanded="false">Helyreigazítások jelöltségének aránya</button></li>
-			  <li><button class="dropdown-item" id="tabVizKeses-tab" data-bs-toggle="tab" data-bs-target="#tabVizKeses" type="button" role="tab" aria-controls="tabVizKeses" aria-selected="false" aria-expanded="false">Helyreigazítások késésének eloszlása</button></li>
+				<li><button class="dropdown-item" id="tabVizCimkek-tab" data-bs-toggle="tab" data-bs-target="#tabVizCimkek" type="button" role="tab" aria-controls="tabVizCimkek" aria-selected="false" aria-expanded="false">Címkék gyakorisága</button></li>
+				<li><button class="dropdown-item" id="tabVizCimkekIdoben-tab" data-bs-toggle="tab" data-bs-target="#tabVizCimkekIdoben" type="button" role="tab" aria-controls="tabVizCimkekIdoben" aria-selected="false" aria-expanded="false">Címkék gyakorisága időben</button></li>
+				<li><button class="dropdown-item" id="tabVizJeloles-tab" data-bs-toggle="tab" data-bs-target="#tabVizJeloles" type="button" role="tab" aria-controls="tabVizJeloles" aria-selected="false" aria-expanded="false">Helyreigazítások jelöltségének aránya</button></li>
+				<li><button class="dropdown-item" id="tabVizKeses-tab" data-bs-toggle="tab" data-bs-target="#tabVizKeses" type="button" role="tab" aria-controls="tabVizKeses" aria-selected="false" aria-expanded="false">Helyreigazítások késésének eloszlása</button></li>
+				<li><button class="dropdown-item" id="tabVizSzofelho-tab" data-bs-toggle="tab" data-bs-target="#tabVizSzofelho" type="button" role="tab" aria-controls="tabVizSzofelho" aria-selected="false" aria-expanded="false">Sajtótermékek szófelhői</button></li>
 			</ul>
 		  </li>
 		  <li class="nav-item" role="presentation">
@@ -737,6 +738,37 @@
 			};
 			makeplotKeses();
 			</script>
+		</div>
+		<div class="tab-pane fade" id="tabVizSzofelho" role="tabpanel" aria-labelledby="tabVizSzofelho-tab">
+			<p>Ez az ábra az egyes sajtótermékek helyreigazításainak szófelhőjét mutatja.</p>
+			<div class="row g-3 align-items-center">
+			  <div class="col-auto">
+				<label class="form-label" for="minhelyreigCimkek">Sajtótermék:</label>
+			  </div>
+			  <div class="col-auto">
+					<select class="form-select" id="sajtotermekSzofelho" onChange="makeplotSzofelho();">
+					</select>
+			  </div>				
+			</div>
+			
+			<img id = "szofelhoImg"/>			
+				
+			<script>
+			$.getJSON("wordclouds.json", function (data) {				
+				  $.each(data, function (key, entry) {
+					$('#sajtotermekSzofelho').append($('<option></option>').attr('value', entry.SajtotermekNev).text(entry.SajtotermekNev));
+				  })
+				});
+			</script>
+			
+			<script>
+			function makeplotSzofelho() {
+				$.getJSON("wordclouds.json", function (data) {	
+					$("#szofelhoImg").attr("src", data.filter(value => value.SajtotermekNev == document.getElementById('sajtotermekSzofelho').value).map(value => value.Img));
+				})
+			}
+			makeplotSzofelho();
+			</script>			
 		</div>
 		<div class="tab-pane fade" id="tabMagy" role="tabpanel" aria-labelledby="tabMagy-tab">
 			<p><b>Mi a célja ennek az oldalnak?</b></p>
