@@ -375,7 +375,7 @@
 				<li><button class="dropdown-item" id="tabVizCimkekIdoben-tab" data-bs-toggle="tab" data-bs-target="#tabVizCimkekIdoben" type="button" role="tab" aria-controls="tabVizCimkekIdoben" aria-selected="false" aria-expanded="false">Címkék gyakorisága időben</button></li>
 				<li><button class="dropdown-item" id="tabVizJeloles-tab" data-bs-toggle="tab" data-bs-target="#tabVizJeloles" type="button" role="tab" aria-controls="tabVizJeloles" aria-selected="false" aria-expanded="false">Helyreigazítások jelöltségének aránya</button></li>
 				<li><button class="dropdown-item" id="tabVizKeses-tab" data-bs-toggle="tab" data-bs-target="#tabVizKeses" type="button" role="tab" aria-controls="tabVizKeses" aria-selected="false" aria-expanded="false">Helyreigazítások késésének eloszlása</button></li>
-				<!-- <li><button class="dropdown-item" id="tabVizSzofelho-tab" data-bs-toggle="tab" data-bs-target="#tabVizSzofelho" type="button" role="tab" aria-controls="tabVizSzofelho" aria-selected="false" aria-expanded="false">Sajtótermékek szófelhői</button></li> -->
+				<li><button class="dropdown-item" id="tabVizSzofelho-tab" data-bs-toggle="tab" data-bs-target="#tabVizSzofelho" type="button" role="tab" aria-controls="tabVizSzofelho" aria-selected="false" aria-expanded="false">Címkék szófelhői</button></li>
 			</ul>
 		  </li>
 		  <li class="nav-item" role="presentation">
@@ -739,14 +739,14 @@
 			makeplotKeses();
 			</script>
 		</div>
-		<!-- <div class="tab-pane fade" id="tabVizSzofelho" role="tabpanel" aria-labelledby="tabVizSzofelho-tab">
-			<p>Ez az ábra az egyes sajtótermékek helyreigazításainak szófelhőjét mutatja.</p>
+		<div class="tab-pane fade" id="tabVizSzofelho" role="tabpanel" aria-labelledby="tabVizSzofelho-tab">
+			<p>Ez az ábra az egyes címkék helyreigazításainak szófelhőjét mutatja (azon címkék választhatóak ki, melyekre legalább 10 helyreigazítás van).</p>
 			<div class="row g-3 align-items-center">
 			  <div class="col-auto">
-				<label class="form-label" for="minhelyreigCimkek">Sajtótermék:</label>
+				<label class="form-label" for="cimkeSzofelho">Címkék:</label>
 			  </div>
 			  <div class="col-auto">
-					<select class="form-select" id="sajtotermekSzofelho" onChange="makeplotSzofelho();">
+					<select class="form-select" id="cimkeSzofelho" onChange="makeplotSzofelho();">
 					</select>
 			  </div>				
 			</div>
@@ -756,7 +756,7 @@
 			<script>
 			$.getJSON("szofelhok.json", function (data) {				
 				  $.each(data, function (key, entry) {
-					$('#sajtotermekSzofelho').append($('<option></option>').attr('value', entry.SajtotermekNev).text(entry.SajtotermekNev));
+					$('#cimkeSzofelho').append($('<option></option>').attr('value', entry.CimkeSzoveg).text(entry.CimkeSzoveg));
 				  })
 				});
 			</script>
@@ -764,12 +764,12 @@
 			<script>
 			function makeplotSzofelho() {
 				$.getJSON("szofelhok.json", function (data) {	
-					$("#szofelhoImg").attr("src", data.filter(value => value.SajtotermekNev == document.getElementById('sajtotermekSzofelho').value).map(value => value.Img));
+					$("#szofelhoImg").attr("src", data.filter(value => value.CimkeSzoveg == document.getElementById('cimkeSzofelho').value).map(value => value.Img));
 				})
 			}
 			makeplotSzofelho();
 			</script>			
-		</div> -->
+		</div>
 		<div class="tab-pane fade" id="tabMagy" role="tabpanel" aria-labelledby="tabMagy-tab">
 			<p><b>Mi a célja ennek az oldalnak?</b></p>
 			<p>A magyar online, írott sajtóban megjelenő helyreigazítások összegyűjtése és transzparens közzététele, gépi úton is feldolgozható, kutatható módon és hétköznapi böngészésre, elemzésre is alkalmas formában. Törekedtem a teljeskörűségre a 2008. január 1. és 2022. december 31. között megjelent helyreigazításokra vonatkozóan. A projekt becslésem szerint jelenleg 70-80%-os készültségben van.</p>
