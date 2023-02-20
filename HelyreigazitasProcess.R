@@ -50,3 +50,42 @@ jsonlite::write_json(lapply(RawDataCimkeHelyreigazitas[, .N , .(CimkeID)][order(
        OsszN = sum(RawDataCimkeHelyreigazitas$CimkeID==cid),
        PolitikaiPart = RawDataCimkek[CimkeID==cid]$PolitikaiPart,
        x = temp2[CimkeID==cid]$date, y = temp2[CimkeID==cid]$N)), "helyreigido.json", auto_unbox = TRUE)
+
+temp <- merge(rbindlist(lapply(merge(RawDataCimkeHelyreigazitas, RawDataCimkek)[PolitikaiPart==0, .N , .(CimkeID)][N>10][order(N, decreasing = TRUE)]$CimkeID, function(cid) {
+  docs <- tm::Corpus(tm::VectorSource(RawDataHelyreigazitasok[HelyreigazitasID%in%RawDataCimkeHelyreigazitas[CimkeID==cid]$HelyreigazitasID]$HelyreigazitasSzoveg))
+  docs <- tm::tm_map(docs, tm::removePunctuation)
+  docs <- tm::tm_map(docs, tm::removeNumbers)
+  docs <- tm::tm_map(docs, tm::stripWhitespace)
+  docs <- tm::tm_map(docs, tm::content_transformer(tolower))
+  docs <- tm::tm_map(docs, tm::removeWords, tm::stopwords("hungarian"))
+  docs <- tm::tm_map(docs, tm::stripWhitespace)
+  
+  dtm <- as.matrix(tm::TermDocumentMatrix(docs))
+  dtm <- sort(rowSums(dtm), decreasing = TRUE)
+  if(length(dtm)>0) data.table(CimkeID = cid, word = names(dtm), freq = dtm) else NULL
+})), RawDataCimkek, by = "CimkeID", sort = FALSE)
+
+stopwords <- c("állítottuk", "valótlanul", "cikkünkben", "megjelent", "napján", "híreszteltük", "valóság",
+               "című", "cikkben", "címmel", "cikkünk", "tévesen", "lapunk", "számában", "hamis",
+               "valóságban", "valótlan", "színben", "közöltük", "január", "február", "március", "április",
+               "május", "június", "július", "augusztus", "szeptember", "október", "november",
+               "december", "tényt", "tüntettük", "alperes", "felperes", "jóhírnévhez", "fűződő",
+               "híresztelte", "rendű", "–", "látszatot", "keltettünk", "keltettük", "megsértettük")
+
+unique(temp$CimkeSzoveg)
+
+optsizes <- data.table(CimkeSzoveg = c("Juhász Péter", "Gyurcsány Ferenc", "Czeglédy Csaba", "Vona Gábor",
+                                       "Portik Tamás", "SZEVIÉP", "Jakab Péter", "Habony Árpád",
+                                       "Simicska Lajos", "Botka László", "Ujhelyi István",
+                                       "Mészáros Lőrinc", "Bajnai Gordon", "Magyar Helsinki Bizottság"),
+                       size = c(0.35, 0.3, 0.5, 0.65, 0.45, 0.7, 0.5, 0.5, 0.7, 0.3, 0.6, 0.45, 0.7, 0.4))
+
+wcres <- rbindlist(lapply(unique(temp$CimkeSzoveg), function(csz) {
+  temp2 <- temp[CimkeSzoveg==csz&!word%in%stopwords&!word%in%tolower(strsplit(csz, " ")[[1]]), .(word, freq)]
+  htmlwidgets::saveWidget(wordcloud2::wordcloud2(temp2, size = optsizes[CimkeSzoveg==csz]$size),
+                          "../wctemp.html", selfcontained = FALSE)
+  webshot::webshot("../wctemp.html", "../wctemp.png", delay = 10)
+  data.table(CimkeSzoveg = csz, Nevvel = TRUE, Img = xfun::base64_uri("../wctemp.png"))
+}))
+
+jsonlite::write_json(wcres, "szofelhok.json")
