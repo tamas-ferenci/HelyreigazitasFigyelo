@@ -137,6 +137,7 @@
 	$(document).ready(function () {
 		var dt = $('#example').DataTable({
 		ajax: 'helyreigazitasok.json',
+		"processing": true,
 		responsive: {
 			details: {
 				display: $.fn.dataTable.Responsive.display.childRowImmediate,
