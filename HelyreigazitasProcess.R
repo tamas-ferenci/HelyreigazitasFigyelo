@@ -77,8 +77,10 @@ unique(temp$CimkeSzoveg)
 optsizes <- data.table(CimkeSzoveg = c("Juhász Péter", "Gyurcsány Ferenc", "Czeglédy Csaba", "Vona Gábor",
                                        "Portik Tamás", "SZEVIÉP", "Jakab Péter", "Habony Árpád",
                                        "Simicska Lajos", "Botka László", "Ujhelyi István",
-                                       "Mészáros Lőrinc", "Bajnai Gordon", "Magyar Helsinki Bizottság"),
-                       size = c(0.35, 0.3, 0.5, 0.65, 0.45, 0.7, 0.5, 0.5, 0.7, 0.3, 0.6, 0.45, 0.7, 0.4))
+                                       "Mészáros Lőrinc", "Bajnai Gordon", "Magyar Helsinki Bizottság",
+                                       "Gyermekrák Alapítvány"),
+                       size = c(0.35, 0.3, 0.5, 0.65, 0.45, 0.7, 0.5, 0.5, 0.7, 0.3, 0.6, 0.45, 0.7, 0.4,
+                                0.8))
 
 wcres <- rbindlist(lapply(unique(temp$CimkeSzoveg), function(csz) {
   temp2 <- temp[CimkeSzoveg==csz&!word%in%stopwords&!word%in%tolower(strsplit(csz, " ")[[1]]), .(word, freq)]
