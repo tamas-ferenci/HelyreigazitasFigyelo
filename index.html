@@ -754,18 +754,13 @@
 			</div>
 			
 			<img id = "szofelhoImg"/>			
-				
-			<script>
-			$.getJSON("szofelhok.json", function (data) {				
-				  $.each(data, function (key, entry) {
-					$('#cimkeSzofelho').append($('<option></option>').attr('value', entry.CimkeSzoveg).text(entry.CimkeSzoveg));
-				  })
-				});
-			</script>
 			
 			<script>
 			function makeplotSzofelho() {
-				$.getJSON("szofelhok.json", function (data) {	
+				$.getJSON("szofelhok.json", function (data) {
+					$.each(data, function (key, entry) {
+						$('#cimkeSzofelho').append($('<option></option>').attr('value', entry.CimkeSzoveg).text(entry.CimkeSzoveg));
+					})
 					$("#szofelhoImg").attr("src", data.filter(value => value.CimkeSzoveg == document.getElementById('cimkeSzofelho').value).map(value => value.Img));
 				})
 			}
