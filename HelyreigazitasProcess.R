@@ -1,3 +1,5 @@
+# setwd
+
 library(data.table)
 
 RawDataHelyreigazitasok <- fread("helyreigazitasok.csv", dec = ",")
