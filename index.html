@@ -377,11 +377,11 @@
 		  <li class="nav-item dropdown" role="presentation">
 			<button class="nav-link dropdown-toggle" id="tabViz-tab" data-bs-toggle="dropdown" data-bs-target="#tabViz" type="button" role="tab" aria-selected="false"  aria-expanded="false">Vizualizációk</button>
 			<ul class="dropdown-menu">
-				<li><button class="dropdown-item" id="tabVizCimkek-tab" data-bs-toggle="tab" data-bs-target="#tabVizCimkek" type="button" role="tab" aria-controls="tabVizCimkek" aria-selected="false" aria-expanded="false">Címkék gyakorisága</button></li>
+				<li><button class="dropdown-item" id="tabVizCimkek-tab" data-bs-toggle="tab" data-bs-target="#tabVizCimkek" type="button" role="tab" aria-controls="tabVizCimkek" aria-selected="false" aria-expanded="false" onclick="makeplotCimkek();">Címkék gyakorisága</button></li>
 				<li><button class="dropdown-item" id="tabVizCimkekIdoben-tab" data-bs-toggle="tab" data-bs-target="#tabVizCimkekIdoben" type="button" role="tab" aria-controls="tabVizCimkekIdoben" aria-selected="false" aria-expanded="false" onclick="makeplotCimkekIdoben();">Címkék gyakorisága időben</button></li>
-				<li><button class="dropdown-item" id="tabVizJeloles-tab" data-bs-toggle="tab" data-bs-target="#tabVizJeloles" type="button" role="tab" aria-controls="tabVizJeloles" aria-selected="false" aria-expanded="false">Helyreigazítások jelöltségének aránya</button></li>
-				<li><button class="dropdown-item" id="tabVizKeses-tab" data-bs-toggle="tab" data-bs-target="#tabVizKeses" type="button" role="tab" aria-controls="tabVizKeses" aria-selected="false" aria-expanded="false">Helyreigazítások késésének eloszlása</button></li>
-				<li><button class="dropdown-item" id="tabVizSzofelho-tab" data-bs-toggle="tab" data-bs-target="#tabVizSzofelho" type="button" role="tab" aria-controls="tabVizSzofelho" aria-selected="false" aria-expanded="false">Címkék szófelhői</button></li>
+				<li><button class="dropdown-item" id="tabVizJeloles-tab" data-bs-toggle="tab" data-bs-target="#tabVizJeloles" type="button" role="tab" aria-controls="tabVizJeloles" aria-selected="false" aria-expanded="false" onclick="makeplotJeloles();">Helyreigazítások jelöltségének aránya</button></li>
+				<li><button class="dropdown-item" id="tabVizKeses-tab" data-bs-toggle="tab" data-bs-target="#tabVizKeses" type="button" role="tab" aria-controls="tabVizKeses" aria-selected="false" aria-expanded="false" onclick="makeplotKeses();">Helyreigazítások késésének eloszlása</button></li>
+				<li><button class="dropdown-item" id="tabVizSzofelho-tab" data-bs-toggle="tab" data-bs-target="#tabVizSzofelho" type="button" role="tab" aria-controls="tabVizSzofelho" aria-selected="false" aria-expanded="false" onclick="makeplotSzofelho();">Címkék szófelhői</button></li>
 			</ul>
 		  </li>
 		  <li class="nav-item" role="presentation">
@@ -501,8 +501,7 @@
 				options.series[0].data = tabres;
 				var chart = new Highcharts.Chart('containerCimkek', options);
 			});
-		};
-		makeplotCimkek();		
+		};	
 		</script>
 		</div>
 		<div class="tab-pane fade" id="tabVizCimkekIdoben" role="tabpanel" aria-labelledby="tabVizCimkekIdoben-tab">
@@ -686,8 +685,7 @@
 					options.series[0].data = res;
 					var chart = new Highcharts.Chart('containerJeloles', options);
 				});
-			};
-			makeplotJeloles();		
+			};	
 			</script>
 		</div>
 		<div class="tab-pane fade" id="tabVizKeses" role="tabpanel" aria-labelledby="tabVizKeses-tab">
@@ -764,7 +762,6 @@
 					var chart = new Highcharts.Chart('containerKeses', options);
 				});
 			};
-			makeplotKeses();
 			</script>
 		</div>
 		<div class="tab-pane fade" id="tabVizSzofelho" role="tabpanel" aria-labelledby="tabVizSzofelho-tab">
@@ -790,7 +787,6 @@
 					$("#szofelhoImg").attr("src", data.filter(value => value.CimkeSzoveg == document.getElementById('cimkeSzofelho').value).map(value => value.Img));
 				})
 			}
-			makeplotSzofelho();
 			</script>			
 		</div>
 		<div class="tab-pane fade" id="tabMagy" role="tabpanel" aria-labelledby="tabMagy-tab">
