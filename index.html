@@ -378,7 +378,7 @@
 			<button class="nav-link dropdown-toggle" id="tabViz-tab" data-bs-toggle="dropdown" data-bs-target="#tabViz" type="button" role="tab" aria-selected="false"  aria-expanded="false">Vizualizációk</button>
 			<ul class="dropdown-menu">
 				<li><button class="dropdown-item" id="tabVizCimkek-tab" data-bs-toggle="tab" data-bs-target="#tabVizCimkek" type="button" role="tab" aria-controls="tabVizCimkek" aria-selected="false" aria-expanded="false">Címkék gyakorisága</button></li>
-				<li><button class="dropdown-item" id="tabVizCimkekIdoben-tab" data-bs-toggle="tab" data-bs-target="#tabVizCimkekIdoben" type="button" role="tab" aria-controls="tabVizCimkekIdoben" aria-selected="false" aria-expanded="false">Címkék gyakorisága időben</button></li>
+				<li><button class="dropdown-item" id="tabVizCimkekIdoben-tab" data-bs-toggle="tab" data-bs-target="#tabVizCimkekIdoben" type="button" role="tab" aria-controls="tabVizCimkekIdoben" aria-selected="false" aria-expanded="false" onclick="makeplotCimkekIdoben();">Címkék gyakorisága időben</button></li>
 				<li><button class="dropdown-item" id="tabVizJeloles-tab" data-bs-toggle="tab" data-bs-target="#tabVizJeloles" type="button" role="tab" aria-controls="tabVizJeloles" aria-selected="false" aria-expanded="false">Helyreigazítások jelöltségének aránya</button></li>
 				<li><button class="dropdown-item" id="tabVizKeses-tab" data-bs-toggle="tab" data-bs-target="#tabVizKeses" type="button" role="tab" aria-controls="tabVizKeses" aria-selected="false" aria-expanded="false">Helyreigazítások késésének eloszlása</button></li>
 				<li><button class="dropdown-item" id="tabVizSzofelho-tab" data-bs-toggle="tab" data-bs-target="#tabVizSzofelho" type="button" role="tab" aria-controls="tabVizSzofelho" aria-selected="false" aria-expanded="false">Címkék szófelhői</button></li>
@@ -592,7 +592,6 @@
 					var chart = new Highcharts.Chart('containerCimkekIdoben', options);
 				})
 			};
-			makeplotCimkekIdoben();
 			</script>
 		</div>
 		<div class="tab-pane fade" id="tabVizJeloles" role="tabpanel" aria-labelledby="tabVizJeloles-tab">
