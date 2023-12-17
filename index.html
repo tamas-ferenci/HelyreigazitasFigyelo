@@ -771,8 +771,7 @@
 				<label class="form-label" for="cimkeSzofelho">Címkék:</label>
 			  </div>
 			  <div class="col-auto">
-					<select class="form-select" id="cimkeSzofelho" onChange="makeplotSzofelho();">
-					</select>
+					<select class="form-select" id="cimkeSzofelho" onChange="makeplotSzofelho();"></select>
 			  </div>				
 			</div>
 			
@@ -780,6 +779,7 @@
 			
 			<script>
 			function makeplotSzofelho() {
+				$('#cimkeSzofelho').empty();
 				$.getJSON("szofelhok.json", function (data) {
 					$.each(data, function (key, entry) {
 						$('#cimkeSzofelho').append($('<option></option>').attr('value', entry.CimkeSzoveg).text(entry.CimkeSzoveg));
