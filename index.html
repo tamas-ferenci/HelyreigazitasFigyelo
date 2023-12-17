@@ -767,27 +767,26 @@
 		<div class="tab-pane fade" id="tabVizSzofelho" role="tabpanel" aria-labelledby="tabVizSzofelho-tab">
 			<p>Ez az ábra az egyes címkék helyreigazításainak szófelhőjét mutatja (azon címkék választhatóak ki, melyekre legalább 10 helyreigazítás van).</p>
 			<div class="row g-3 align-items-center">
-			  <div class="col-auto">
-				<label class="form-label" for="cimkeSzofelho">Címkék:</label>
-			  </div>
-			  <div class="col-auto">
+				<div class="col-auto">
+					<label class="form-label" for="cimkeSzofelho">Címkék:</label>
+				</div>
+				<div class="col-auto">
 					<select class="form-select" id="cimkeSzofelho" onChange="makeplotSzofelho();"></select>
-			  </div>				
+				</div>
 			</div>
 			
 			<img id = "szofelhoImg" alt = "Szófelhő" src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
 			
 			<script>
-			function makeplotSzofelho() {
-				$('#cimkeSzofelho').empty();
+			function makeplotSzofelho() {				
 				$.getJSON("szofelhok.json", function (data) {
 					$.each(data, function (key, entry) {
-						$('#cimkeSzofelho').append($('<option></option>').attr('value', entry.CimkeSzoveg).text(entry.CimkeSzoveg));
+						if(!Array.from(cimkeSzofelho.options).map(o => o.text).includes(entry.CimkeSzoveg)) $('#cimkeSzofelho').append($('<option></option>').attr('value', entry.CimkeSzoveg).text(entry.CimkeSzoveg));
 					})
 					$("#szofelhoImg").attr("src", data.filter(value => value.CimkeSzoveg == document.getElementById('cimkeSzofelho').value).map(value => value.Img));
 				})
 			}
-			</script>			
+			</script>
 		</div>
 		<div class="tab-pane fade" id="tabMagy" role="tabpanel" aria-labelledby="tabMagy-tab">
 			<p><b>Mi a célja ennek az oldalnak?</b></p>
