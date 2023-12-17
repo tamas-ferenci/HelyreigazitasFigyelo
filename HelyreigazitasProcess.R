@@ -4,6 +4,9 @@ library(data.table)
 
 RawDataHelyreigazitasok <- fread("helyreigazitasok.csv", dec = ",")
 RawDataCimkek <- fread("cimkek.csv", dec = ",")
+
+RawDataCimkek[duplicated(CimkeSzoveg)]
+
 RawDataCimkeHelyreigazitas <- fread("cimke_helyreigazitas.csv", dec = ",")
 RawDataSajtotermekek <- fread("sajtotermekek.csv")
 RawDataHivatkozasok <- fread("hivatkozasok.csv", dec = ",")
