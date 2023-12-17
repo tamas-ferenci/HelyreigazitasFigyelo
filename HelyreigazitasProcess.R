@@ -76,11 +76,15 @@ stopwords <- c("állítottuk", "valótlanul", "cikkünkben", "megjelent", "napj�
 
 unique(temp$CimkeSzoveg)
 
-optsizes <- data.table(CimkeSzoveg = c("Juhász Péter", "Gyurcsány Ferenc", "Czeglédy Csaba", "Vona Gábor",
-                                       "Portik Tamás", "SZEVIÉP", "Jakab Péter", "Habony Árpád",
-                                       "Simicska Lajos", "Botka László", "Ujhelyi István",
-                                       "Mészáros Lőrinc", "Bajnai Gordon", "Magyar Helsinki Bizottság",
-                                       "Gyermekrák Alapítvány"),
+cszek <- c("Juhász Péter", "Gyurcsány Ferenc", "Czeglédy Csaba", "Vona Gábor",
+           "Portik Tamás", "SZEVIÉP", "Jakab Péter", "Habony Árpád",
+           "Simicska Lajos", "Botka László", "Ujhelyi István",
+           "Mészáros Lőrinc", "Bajnai Gordon", "Magyar Helsinki Bizottság",
+           "Gyermekrák Alapítvány")
+
+setequal(cszek, unique(temp$CimkeSzoveg))
+
+optsizes <- data.table(CimkeSzoveg = cszek,
                        size = c(0.35, 0.3, 0.5, 0.65, 0.45, 0.7, 0.5, 0.5, 0.7, 0.3, 0.6, 0.45, 0.7, 0.4,
                                 0.8))
 
