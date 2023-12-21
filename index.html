@@ -5,9 +5,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
 	<title>Helyreigazítás-figyelő</title>
-		
+	
 	<meta name="description" content="A magyar online sajtóban 2008 és 2022 között megjelent helyreigazítások adatbázisa.">
-
+	
 	<meta property="og:title" content="Helyreigazítás-figyelő">
 	<meta property="og:type" content="website">
 	<meta property="og:url" content="https://www.helyreigazitas-figyelo.hu/">
@@ -16,12 +16,12 @@
 	<meta property="og:image:height" content="628">
 	<meta property="og:description" content="A magyar online sajtóban 2008 és 2022 között megjelent helyreigazítások adatbázisa.">
 	<meta property="og:locale" content="hu-HU">
-		
+	
 	<meta name="twitter:card" content="summary_large_image">
 	<meta name="twitter:title" content="Helyreigazítás-figyelő">
 	<meta name="twitter:description" content="A magyar online sajtóban 2008 és 2022 között megjelent helyreigazítások adatbázisa.">
 	<meta name="twitter:image" content="https://raw.githubusercontent.com/tamas-ferenci/HelyreigazitasFigyelo/main/wordcloud1.png">
-		
+	
 	<link rel="canonical" href="https://www.helyreigazitas-figyelo.hu/">
 	
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -30,10 +30,10 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 	<script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-1.13.8/r-2.5.0/sp-2.2.0/sl-1.7.0/datatables.min.js"></script>
 	<script src="https://cdn.datatables.net/plug-ins/1.13.7/sorting/diacritics-sort.js"></script>
-		
+	
 	<script src="https://code.highcharts.com/highcharts.js"></script>
 	<script src="https://code.highcharts.com/modules/exporting.js"></script>
-		
+	
 	<script type="text/javascript">
 	    (function(c,l,a,r,i,t,y){
 		c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -57,22 +57,22 @@
 		word-break:break-all;
 	}
 	</style>
-		
+	
 	<script>
 	Highcharts.setOptions({
-    		lang: {
+			lang: {
 			contextButtonTitle: 'Helyi menü',
 			exitFullscreen: 'Kilépés a teljes képernyős módból',
 			hideData: 'Adatok elrejtése',
-            		loading: 'Betöltés...',
+					loading: 'Betöltés...',
 			mainBreadcrumb: 'Fő ábra',
 			noData: 'Nincs megjeleníthető adat',
 			printChart: 'Ábra nyomtatása',
 			viewData: 'Adatok megtekintése',
 			viewFullscreen: 'Teljes képernyős nézet',
-            		months: ['január', 'február', 'március', 'április', 'május','június', 'július', 'augusztus', 'szeptember', 'október', 'november', 'december'],
-            		shortMonths:  ['jan', 'febr', 'márc', 'ápr', 'máj', 'jún', 'júl', 'aug', 'szept', 'okt', 'nov', 'dec'],
-            		weekdays: ['vasárnap', 'hétfő', 'kedd', 'szerda', 'csütörtök', 'péntek', 'szombat'],
+					months: ['január', 'február', 'március', 'április', 'május','június', 'július', 'augusztus', 'szeptember', 'október', 'november', 'december'],
+					shortMonths:  ['jan', 'febr', 'márc', 'ápr', 'máj', 'jún', 'júl', 'aug', 'szept', 'okt', 'nov', 'dec'],
+					weekdays: ['vasárnap', 'hétfő', 'kedd', 'szerda', 'csütörtök', 'péntek', 'szombat'],
 			shortWeekdays: ['Vas', 'Hét', 'Ked', 'Sze', 'Csü', 'Pén', 'Szo', 'Vas'],
 			exportButtonTitle: "Exportál",
 			printButtonTitle: "Importál",
@@ -85,11 +85,11 @@
 			downloadSVG: 'Letöltés SVG formátumban',
 			downloadCSV: 'Letöltés CSV formátumú táblázatként',
 			downloadXLS: 'Letöltés XLS formátumú táblázatként',
-            		resetZoom: "Nagyítás alaphelyzetbe állítása",
-            		resetZoomTitle: "Nagyítás alaphelyzetbe állítása",
-            		thousandsSep: " ",
-            		decimalPoint: ','     
-        	}        
+					resetZoom: "Nagyítás alaphelyzetbe állítása",
+					resetZoomTitle: "Nagyítás alaphelyzetbe állítása",
+					thousandsSep: " ",
+					decimalPoint: ','     
+			}
 	});
 	</script>
 	
@@ -350,15 +350,17 @@
         ],
 		pageLength: 50,
 		language: {
-			url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/hu.json'
+			url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/hu.json'
 		}
 		});
 	});	
 	</script>
+	
 	</head>
+	
 	<body>
 	<div id="fb-root"></div>
-	<script async defer crossorigin="anonymous" src="https://connect.facebook.net/hu_HU/sdk.js#xfbml=1&version=v15.0" nonce="GMxGcVm7"></script>
+	<script async defer crossorigin="anonymous" src="https://connect.facebook.net/hu_HU/sdk.js#xfbml=1&version=v18.0" nonce="qc9wRIgY"></script>
 	<div class="container-fluid">
 		<div class="row">
 		<div class="col-1"></div>
@@ -371,61 +373,76 @@
 		</div><br>
 		
 		<ul class="nav nav-tabs" id="myTab" role="tablist">
-		  <li class="nav-item" role="presentation">
-			<button class="nav-link active" id="tabDB-tab" data-bs-toggle="tab" data-bs-target="#tabDB" type="button" role="tab" aria-controls="tabDB" aria-selected="true">Adatbázis</button>
-		  </li>
-		  <li class="nav-item dropdown" role="presentation">
-			<button class="nav-link dropdown-toggle" id="tabViz-tab" data-bs-toggle="dropdown" data-bs-target="#tabViz" type="button" role="tab" aria-selected="false"  aria-expanded="false">Vizualizációk</button>
-			<ul class="dropdown-menu">
-				<li><button class="dropdown-item" id="tabVizCimkek-tab" data-bs-toggle="tab" data-bs-target="#tabVizCimkek" type="button" role="tab" aria-controls="tabVizCimkek" aria-selected="false" aria-expanded="false" onclick="makeplotCimkek();">Címkék gyakorisága</button></li>
-				<li><button class="dropdown-item" id="tabVizCimkekIdoben-tab" data-bs-toggle="tab" data-bs-target="#tabVizCimkekIdoben" type="button" role="tab" aria-controls="tabVizCimkekIdoben" aria-selected="false" aria-expanded="false" onclick="makeplotCimkekIdoben();">Címkék gyakorisága időben</button></li>
-				<li><button class="dropdown-item" id="tabVizJeloles-tab" data-bs-toggle="tab" data-bs-target="#tabVizJeloles" type="button" role="tab" aria-controls="tabVizJeloles" aria-selected="false" aria-expanded="false" onclick="makeplotJeloles();">Helyreigazítások jelöltségének aránya</button></li>
-				<li><button class="dropdown-item" id="tabVizKeses-tab" data-bs-toggle="tab" data-bs-target="#tabVizKeses" type="button" role="tab" aria-controls="tabVizKeses" aria-selected="false" aria-expanded="false" onclick="makeplotKeses();">Helyreigazítások késésének eloszlása</button></li>
-				<li><button class="dropdown-item" id="tabVizSzofelho-tab" data-bs-toggle="tab" data-bs-target="#tabVizSzofelho" type="button" role="tab" aria-controls="tabVizSzofelho" aria-selected="false" aria-expanded="false" onclick="makeplotSzofelho();">Címkék szófelhői</button></li>
-			</ul>
-		  </li>
-		  <li class="nav-item" role="presentation">
-			<button class="nav-link" id="tabMagy-tab" data-bs-toggle="tab" data-bs-target="#tabMagy" type="button" role="tab" aria-controls="tabMagy" aria-selected="false">Magyarázat</button>
-		  </li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link active" id="tabLanding-tab" data-bs-toggle="tab" data-bs-target="#tabLanding" type="button" role="tab" aria-controls="tabLanding" aria-selected="true">Nyitólap</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" id="tabDB-tab" data-bs-toggle="tab" data-bs-target="#tabDB" type="button" role="tab" aria-controls="tabDB" aria-selected="false">Adatbázis</button>
+			</li>
+			<li class="nav-item dropdown" role="presentation">
+				<button class="nav-link dropdown-toggle" id="tabViz-tab" data-bs-toggle="dropdown" data-toggle="dropdown" data-bs-target="#tabViz" type="button" role="tab" aria-selected="false"  aria-expanded="false">Vizualizációk</button>
+				<ul class="dropdown-menu">
+					<li><button class="dropdown-item" id="tabVizCimkek-tab" data-bs-toggle="tab" data-toggle="tab" data-bs-target="#tabVizCimkek" type="button" role="tab" aria-controls="tabVizCimkek" aria-selected="false" aria-expanded="false">Címkék gyakorisága</button></li>
+					<li><button class="dropdown-item" id="tabVizCimkekIdoben-tab" data-bs-toggle="tab" data-toggle="tab" data-bs-target="#tabVizCimkekIdoben" type="button" role="tab" aria-controls="tabVizCimkekIdoben" aria-selected="false" aria-expanded="false">Címkék gyakorisága időben</button></li>
+					<li><button class="dropdown-item" id="tabVizKeses-tab" data-bs-toggle="tab" data-toggle="tab" data-bs-target="#tabVizKeses" type="button" role="tab" aria-controls="tabVizKeses" aria-selected="false" aria-expanded="false">Helyreigazítások késésének eloszlása</button></li>
+					<li><button class="dropdown-item" id="tabVizJeloles-tab" data-bs-toggle="tab" data-toggle="tab" data-bs-target="#tabVizJeloles" type="button" role="tab" aria-controls="tabVizJeloles" aria-selected="false" aria-expanded="false">Helyreigazítások jelöltségének aránya</button></li>
+					<li><button class="dropdown-item" id="tabVizSzofelho-tab" data-bs-toggle="tab" data-toggle="tab" data-bs-target="#tabVizSzofelho" type="button" role="tab" aria-controls="tabVizSzofelho" aria-selected="false" aria-expanded="false">Címkék szófelhői</button></li>
+				</ul>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" id="tabMagy-tab" data-bs-toggle="tab" data-bs-target="#tabMagy" type="button" role="tab" aria-controls="tabMagy" aria-selected="false">Magyarázat</button>
+			</li>
 		</ul>
 		
 		<div class="tab-content" id="myTabContent">
-		  <div class="tab-pane fade show active" id="tabDB" role="tabpanel" aria-labelledby="tabDB-tab">
-			<table id="example" style="width:100%">
-				<thead>
-					<tr>
-						<th>Sajtótermék</th>
-						<th>Cikk dátuma</th>
-						<th>Cikk időpontja</th>
-						<th>Cikk címe</th>
-						<th>Helyreigazítás dátuma</th>
-						<th>Helyreigazítás időpontja</th>
-						<th>Helyreigazítás késése</th>
-						<th class="none">Helyreigazítás szövege:</th>
-						<th class="none">Címkék:</th>
-						<th class="none">Cikk URL:</th>
-						<th class="none">Helyreigazítás URL:</th>
-						<th class="none">Hivatkozások:</th>
-					</tr>
-				</thead>
-				<tfoot>
-					<tr>
-						<th>Sajtótermék</th>
-						<th>Cikk dátuma</th>
-						<th>Cikk időpontja</th>
-						<th>Cikk címe</th>
-						<th>Helyreigazítás dátuma</th>
-						<th>Helyreigazítás időpontja</th>
-						<th>Helyreigazítás késése</th>
-						<th class="none">Helyreigazítás szövege:</th>
-						<th class="none">Címkék:</th>
-						<th class="none">Cikk URL:</th>
-						<th class="none">Helyreigazítás URL:</th>
-						<th class="none">Hivatkozások:</th>
-					</tr>
-				</tfoot>
-			</table>
-		  </div>
+		
+			<div class="tab-pane fade show active" id="tabLanding" role="tabpanel" aria-labelledby="tabLanding-tab">
+				<img src="WordCloudNyitolap.png" class="img-fluid pt-2" alt="Nyitólap szófelhő">
+				<p class = "pt-4">Ez a weboldal a magyar online, írott sajtóban 2008 óta megjelent helyreigazítások semleges (az bármiféle szűrés és politikai kommentár nélküli), a 2008-2022 közti időszakra vonatkozóan teljeskörűségre törekvő gyűjteménye, mely az adatbázison túl egyszerű elemzéseket, vizualizációkat is tartalmaz az adatok jobb megértése érdekében. Ami megtalálható az oldalon:</p>
+				<ul class="list-group">
+					<li class="list-group-item">Egy <a id="link-tabDB-tab" href = "">Adatbázis</a>, mely tartalmazza valamennyi helyreigazítás összes adatát, részletesen csoportosítható, több szempont (dátum, sajtótermék, helyreigazítás témája, késése, jelöltsége) szerint szűrhető, rendezhető módon.</li>
+					<li class="list-group-item">Egy Vizualizációk pont, mely az adatok értelmezését segíti. Megjeleníthető az, hogy az egyes címkékre összesen <a id="link-tabVizCimkek-tab" href="">hány helyreigazítás érkezett</a> és ábrázolható az is, hogy ezek <a id="link-tabVizCimkekIdoben-tab" href="">időben hogyan alakultak</a>. Különösen fontos kérdés annak megítélése, hogy a sajtótermék mennyire járt el rosszhiszeműen, ebben segíthet annak vizsgálata, hogy <a id="link-tabVizKeses-tab" href="">mennyi idő telt el</a> a helyreigazítás közléséig, valamint, hogy <a id="link-tabVizJeloles-tab" href="">milyen arányban volt jelölve</a> az eredeti cikken, hogy azt helyreigazították. Végezetül e pontban elérhetőek <a id="link-tabVizSzofelho-tab" href="">szófelhők</a> is, melyek mutatják, hogy az egyes címkékhez tartozó helyreigazításokban milyen szavak fordultak elő gyakran.</li>
+					<li class="list-group-item">Egy <a id="link-tabMagy-tab" href="">Magyarázatok</a> pont, melyből kiderül többek között, hogy mi az oldal célja, milyen eszközökkel került összeállításra, milyen célokra használható, de fontos szempontokat tartalmaz arra vonatkozóan is, hogy milyen limitációkra kell tekintettel lenni az értelmezésnél.</li>
+				</ul>
+			</div>
+		
+			<div class="tab-pane fade" id="tabDB" role="tabpanel" aria-labelledby="tabDB-tab">
+				<table id="example" style="width:100%">
+					<thead>
+						<tr>
+							<th>Sajtótermék</th>
+							<th>Cikk dátuma</th>
+							<th>Cikk időpontja</th>
+							<th>Cikk címe</th>
+							<th>Helyreigazítás dátuma</th>
+							<th>Helyreigazítás időpontja</th>
+							<th>Helyreigazítás késése</th>
+							<th class="none">Helyreigazítás szövege:</th>
+							<th class="none">Címkék:</th>
+							<th class="none">Cikk URL:</th>
+							<th class="none">Helyreigazítás URL:</th>
+							<th class="none">Hivatkozások:</th>
+						</tr>
+					</thead>
+					<tfoot>
+						<tr>
+							<th>Sajtótermék</th>
+							<th>Cikk dátuma</th>
+							<th>Cikk időpontja</th>
+							<th>Cikk címe</th>
+							<th>Helyreigazítás dátuma</th>
+							<th>Helyreigazítás időpontja</th>
+							<th>Helyreigazítás késése</th>
+							<th class="none">Helyreigazítás szövege:</th>
+							<th class="none">Címkék:</th>
+							<th class="none">Cikk URL:</th>
+							<th class="none">Helyreigazítás URL:</th>
+							<th class="none">Hivatkozások:</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		
 		<div class="tab-pane fade" id="tabVizCimkek" role="tabpanel" aria-labelledby="tabVizCimkek-tab">
 		<p>Ez az ábra megmutatja, hogy a teljes vizsgált időtartományban hány olyan helyreigazítás jelent meg, mely adott címkével bír. Beállítható, hogy mi az a minimális darabszám, amivel egy címke felkerüljön az ábrára, illetve, hogy a politikai pártok megjelenjenek-e a címkék között. Az ábra jobb felső sarkán elérhetőek a további opciók, beleértve az ábra letöltését.</p>
 		<div class="row g-3 align-items-center">
@@ -500,8 +517,9 @@
 				options.series[0].name = 'Helyreigazítások száma';
 				options.series[0].data = tabres;
 				var chart = new Highcharts.Chart('containerCimkek', options);
-			});
-		};	
+			});			
+		};
+		makeplotCimkek();
 		</script>
 		</div>
 		<div class="tab-pane fade" id="tabVizCimkekIdoben" role="tabpanel" aria-labelledby="tabVizCimkekIdoben-tab">
@@ -591,8 +609,87 @@
 					var chart = new Highcharts.Chart('containerCimkekIdoben', options);
 				})
 			};
+			makeplotCimkekIdoben();
 			</script>
 		</div>
+		
+		<div class="tab-pane fade" id="tabVizKeses" role="tabpanel" aria-labelledby="tabVizKeses-tab">
+			<p>Ez az ábra szemlélteti azt, hogy az egyes helyreigazítások mennyivel a helyreigazított cikk közlése után jelentek meg. Az ábrán minden pont egy ilyen "késés"; a függőleges tengely mutatja a sajtóterméket, a vízszintes a késés idejét, évben mérve. Egy pontra ráállva megjelenik a cikk címe, illetve a cikk és a helyreigazítás megjelenésének az időpontja. Az ábra jobb felső sarkán elérhetőek a további opciók, beleértve az ábra letöltését. Beállítható, hogy csak a teljesen feldolgozott sajtótermékek jelenjenek-e meg.</p>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" checked id="csakkeszKeses" onChange="makeplotKeses();">
+				<label class="form-check-label" for="csakkeszKeses">Csak azok a sajtótermékek szerepeljenek, amelyeknek befejeződött a legyűjtése</label>
+			</div>
+			<figure class="highcharts-figure">
+				<div id="containerKeses" style="height: 70vh; width: 75vw"></div>
+			</figure>			
+			<script>
+			function makeplotKeses() {
+				var options = {
+					chart: {
+						type: 'scatter'
+					},
+					title: {
+						text: 'Helyreigazítások késésének eloszlása, 2008-2022',
+						align: 'left'
+					},
+					subtitle: {
+						text: 'helyreigazitas-figyelo.hu',
+						align: 'left'
+					},
+					yAxis: {
+						reversed: true,
+						type: "category",
+						title: '',
+						labels: {
+							format: "{value}",
+							step: 1
+						}
+					},
+					xAxis: {
+						title: {
+							text: 'Késés időtartama [év]'
+						}
+					},
+					tooltip: {
+						formatter: function () {							
+							var string = 'Cím: ' + this.point.CikkCim + '<br>Cikk megjelent: ' + this.point.CikkDatum + ', helyreigazítás megjelent: ' + this.point.HelyreigazitasDatum;
+							return string;
+						}
+					},
+					plotOptions: {
+						scatter: {
+							jitter: {
+								y: 0.25,
+								x: 0
+							}
+						}
+					},
+					legend: {
+						enabled: false
+					}
+				};
+				
+				$.getJSON('helyreigazitasok.json', function(data) {
+					var res = Object.filter(data.data, value => value.KeszVan >= document.getElementById('csakkeszKeses').checked);					
+					res = Object.filter(res, value => value.Keses!='NA');
+					res = Object.values(res).map(a => {return {Keses: a.Keses/365, name: a.SajtotermekNev, CikkCim: a.CikkCim, CikkDatum: a.CikkDatum, HelyreigazitasDatum: a.HelyreigazitasDatum}});
+					var uniqueNames = [...new Set(res.map(x => x.name))];
+					var temp = Array(uniqueNames.length);
+					for (var i = 0; i<uniqueNames.length; i++) {
+						temp[i] = {
+							name: uniqueNames[i],
+							data: res.filter(x => x.name==uniqueNames[i]).map(a => {return{x: a.Keses, y: i, CikkCim: a.CikkCim, CikkDatum: a.CikkDatum, HelyreigazitasDatum: a.HelyreigazitasDatum}})
+						};
+					}
+					options.series = temp;
+					options.yAxis.categories = uniqueNames;
+					var chart = new Highcharts.Chart('containerKeses', options);
+				});
+			};
+			makeplotKeses();
+			</script>
+		</div>
+		
 		<div class="tab-pane fade" id="tabVizJeloles" role="tabpanel" aria-labelledby="tabVizJeloles-tab">
 			<p>Ez az ábra megadja, hogy az egyes sajtótermékek az általuk közölt és később helyreigazított cikkek hány százalékánál jelölték magán az eredeti cikken, hogy az helyre lett igazítva. Az ábrán szereplő sajtótermékek köre beállítható: megadható, hogy mi az a minimális számú helyreigazított cikk, amivel egy sajtótermék felkerül az ábrára, illetve, hogy csak a teljesen feldolgozott sajtótermékek jelenjenek-e meg. Az ábra jobb felső sarkán elérhetőek a további opciók, beleértve az ábra letöltését.</p>
 			<div class="row g-3 align-items-center">
@@ -685,85 +782,11 @@
 					options.series[0].data = res;
 					var chart = new Highcharts.Chart('containerJeloles', options);
 				});
-			};	
-			</script>
-		</div>
-		<div class="tab-pane fade" id="tabVizKeses" role="tabpanel" aria-labelledby="tabVizKeses-tab">
-			<p>Ez az ábra szemlélteti azt, hogy az egyes helyreigazítások mennyivel a helyreigazított cikk közlése után jelentek meg. Az ábrán minden pont egy ilyen "késés"; a függőleges tengely mutatja a sajtóterméket, a vízszintes a késés idejét, évben mérve. Egy pontra ráállva megjelenik a cikk címe, illetve a cikk és a helyreigazítás megjelenésének az időpontja. Az ábra jobb felső sarkán elérhetőek a további opciók, beleértve az ábra letöltését. Beállítható, hogy csak a teljesen feldolgozott sajtótermékek jelenjenek-e meg.</p>
-			<div class="form-check">
-				<input class="form-check-input" type="checkbox" checked id="csakkeszKeses" onChange="makeplotKeses();">
-				<label class="form-check-label" for="csakkeszKeses">Csak azok a sajtótermékek szerepeljenek, amelyeknek befejeződött a legyűjtése</label>
-			</div>
-			<figure class="highcharts-figure">
-				<div id="containerKeses" style="height: 70vh; width: 75vw"></div>
-			</figure>			
-			<script>
-			function makeplotKeses() {
-				var options = {
-					chart: {
-						type: 'scatter'
-					},
-					title: {
-						text: 'Helyreigazítások késésének eloszlása, 2008-2022',
-						align: 'left'
-					},
-					subtitle: {
-						text: 'helyreigazitas-figyelo.hu',
-						align: 'left'
-					},
-					yAxis: {
-						reversed: true,
-						type: "category",
-						title: '',
-						labels: {
-							format: "{value}",
-							step: 1
-						}
-					},
-					xAxis: {
-						title: {
-							text: 'Késés időtartama [év]'
-						}
-					},
-					tooltip: {
-						formatter: function () {
-							console.log(this);
-							var string = 'Cím: ' + this.point.CikkCim + '<br>Cikk megjelent: ' + this.point.CikkDatum + ', helyreigazítás megjelent: ' + this.point.HelyreigazitasDatum;
-							return string;
-						}
-					},
-					plotOptions: {
-						scatter: {
-							jitter: {
-								y: 0.25,
-								x: 0
-							}
-						}
-					},
-					legend: {
-						enabled: false
-					}
-				};
-				
-				$.getJSON('helyreigazitasok.json', function(data) {
-					var res = Object.filter(data.data, value => value.KeszVan >= document.getElementById('csakkeszKeses').checked);					
-					res = Object.filter(res, value => value.Keses!='NA');
-					res = Object.values(res).map(a => {return {Keses: a.Keses/365, name: a.SajtotermekNev, CikkCim: a.CikkCim, CikkDatum: a.CikkDatum, HelyreigazitasDatum: a.HelyreigazitasDatum}});
-					var uniqueNames = [...new Set(res.map(x => x.name))];
-					var temp = Array(uniqueNames.length);
-					for (var i = 0; i<uniqueNames.length; i++) {
-						temp[i] = {
-							name: uniqueNames[i],
-							data: res.filter(x => x.name==uniqueNames[i]).map(a => {return{x: a.Keses, y: i, CikkCim: a.CikkCim, CikkDatum: a.CikkDatum, HelyreigazitasDatum: a.HelyreigazitasDatum}})
-						};
-					}
-					options.series = temp;
-					options.yAxis.categories = uniqueNames;
-					var chart = new Highcharts.Chart('containerKeses', options);
-				});
 			};
+			makeplotJeloles();
 			</script>
-		</div>
+		</div>		
+		
 		<div class="tab-pane fade" id="tabVizSzofelho" role="tabpanel" aria-labelledby="tabVizSzofelho-tab">
 			<p>Ez az ábra az egyes címkék helyreigazításainak szófelhőjét mutatja (azon címkék választhatóak ki, melyekre legalább 10 helyreigazítás van).</p>
 			<div class="row g-3 align-items-center">
@@ -786,8 +809,10 @@
 					$("#szofelhoImg").attr("src", data.filter(value => value.CimkeSzoveg == document.getElementById('cimkeSzofelho').value).map(value => value.Img));
 				})
 			}
+			makeplotSzofelho();
 			</script>
 		</div>
+		
 		<div class="tab-pane fade" id="tabMagy" role="tabpanel" aria-labelledby="tabMagy-tab">
 			<p><b>Mi a célja ennek az oldalnak?</b></p>
 			<p>A magyar online, írott sajtóban megjelenő helyreigazítások összegyűjtése és transzparens közzététele, gépi úton is feldolgozható, kutatható módon és hétköznapi böngészésre, elemzésre is alkalmas formában. Törekedtem a teljeskörűségre a 2008. január 1. és 2022. december 31. között megjelent helyreigazításokra vonatkozóan. A projekt becslésem szerint jelenleg 70-80%-os készültségben van.</p>
@@ -867,6 +892,7 @@
 		</div>
 		</div>
 		</div>
+		
 	<!-- Default Statcounter code for Helyreigazitas-figyelo
 	https://www.helyreigazitas-figyelo.hu/ -->
 	<script type="text/javascript">
@@ -884,5 +910,16 @@
 	alt="látogató számláló"
 	referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
 	<!-- End of Statcounter Code -->
+	
+	<script>
+	$(document).ready(function() {
+		$('#tabLanding a').click(function (e) {
+			e.preventDefault();
+			$('.nav-tabs button[id="' + $(this).attr('id').substring(5) + '"]').tab('show');
+			if($(this).attr('id').substring(5, 11)=="tabViz") $("#tabViz-tab").dropdown('toggle');
+		})
+	});
+	</script>
+	
 	</body>
 </html>
