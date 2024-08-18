@@ -374,23 +374,23 @@
 		
 		<ul class="nav nav-tabs" id="myTab" role="tablist">
 			<li class="nav-item" role="presentation">
-				<button class="nav-link active" id="tabLanding-tab" data-bs-toggle="tab" data-bs-target="#tabLanding" type="button" role="tab" aria-controls="tabLanding" aria-selected="true">Nyitólap</button>
+				<a class="nav-link active" id="tabLanding-tab" data-bs-toggle="tab" data-bs-target="#tabLanding" role="tab" aria-controls="tabLanding" aria-selected="true" href="#tabLanding">Nyitólap</a>
 			</li>
 			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="tabDB-tab" data-bs-toggle="tab" data-bs-target="#tabDB" type="button" role="tab" aria-controls="tabDB" aria-selected="false">Adatbázis</button>
+				<a class="nav-link" id="tabDB-tab" data-bs-toggle="tab" data-bs-target="#tabDB" role="tab" aria-controls="tabDB" aria-selected="false" href="#tabDB">Adatbázis</a>
 			</li>
 			<li class="nav-item dropdown" role="presentation">
-				<button class="nav-link dropdown-toggle" id="tabViz-tab" data-bs-toggle="dropdown" data-toggle="dropdown" data-bs-target="#tabViz" type="button" role="tab" aria-selected="false" aria-expanded="false">Vizualizációk</button>
+				<a class="nav-link dropdown-toggle" id="tabViz-tab" data-bs-toggle="dropdown" data-bs-target="#tabViz" role="tab" aria-selected="false" aria-expanded="false" href="#">Vizualizációk</a>
 				<ul class="dropdown-menu">
-					<li><button class="dropdown-item" id="tabVizCimkek-tab" data-bs-toggle="tab" data-toggle="tab" data-bs-target="#tabVizCimkek" type="button" role="tab" aria-controls="tabVizCimkek" aria-selected="false" aria-expanded="false">Címkék gyakorisága</button></li>
-					<li><button class="dropdown-item" id="tabVizCimkekIdoben-tab" data-bs-toggle="tab" data-toggle="tab" data-bs-target="#tabVizCimkekIdoben" type="button" role="tab" aria-controls="tabVizCimkekIdoben" aria-selected="false" aria-expanded="false">Címkék gyakorisága időben</button></li>
-					<li><button class="dropdown-item" id="tabVizKeses-tab" data-bs-toggle="tab" data-toggle="tab" data-bs-target="#tabVizKeses" type="button" role="tab" aria-controls="tabVizKeses" aria-selected="false" aria-expanded="false">Helyreigazítások késésének eloszlása</button></li>
-					<li><button class="dropdown-item" id="tabVizJeloles-tab" data-bs-toggle="tab" data-toggle="tab" data-bs-target="#tabVizJeloles" type="button" role="tab" aria-controls="tabVizJeloles" aria-selected="false" aria-expanded="false">Helyreigazítások jelöltségének aránya</button></li>
-					<li><button class="dropdown-item" id="tabVizSzofelho-tab" data-bs-toggle="tab" data-toggle="tab" data-bs-target="#tabVizSzofelho" type="button" role="tab" aria-controls="tabVizSzofelho" aria-selected="false" aria-expanded="false">Címkék szófelhői</button></li>
+					<li><a class="dropdown-item" id="tabVizCimkek-tab" data-bs-toggle="tab" data-bs-target="#tabVizCimkek" role="tab" aria-controls="tabVizCimkek" aria-selected="false" aria-expanded="false" href="#tabVizCimkek">Címkék gyakorisága</a></li>
+					<li><a class="dropdown-item" id="tabVizCimkekIdoben-tab" data-bs-toggle="tab" data-bs-target="#tabVizCimkekIdoben" role="tab" aria-controls="tabVizCimkekIdoben" aria-selected="false" aria-expanded="false" href="#tabVizCimkekIdoben">Címkék gyakorisága időben</a></li>
+					<li><a class="dropdown-item" id="tabVizKeses-tab" data-bs-toggle="tab" data-bs-target="#tabVizKeses" role="tab" aria-controls="tabVizKeses" aria-selected="false" aria-expanded="false" href="#tabVizKeses">Helyreigazítások késésének eloszlása</a></li>
+					<li><a class="dropdown-item" id="tabVizJeloles-tab" data-bs-toggle="tab" data-bs-target="#tabVizJeloles" role="tab" aria-controls="tabVizJeloles" aria-selected="false" aria-expanded="false" href="#tabVizJeloles">Helyreigazítások jelöltségének aránya</a></li>
+					<li><a class="dropdown-item" id="tabVizSzofelho-tab" data-bs-toggle="tab" data-bs-target="#tabVizSzofelho" role="tab" aria-controls="tabVizSzofelho" aria-selected="false" aria-expanded="false" href="#tabVizSzofelho">Címkék szófelhői</a></li>
 				</ul>
 			</li>
 			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="tabMagy-tab" data-bs-toggle="tab" data-bs-target="#tabMagy" type="button" role="tab" aria-controls="tabMagy" aria-selected="false">Magyarázat</button>
+				<a class="nav-link" id="tabMagy-tab" data-bs-toggle="tab" data-bs-target="#tabMagy" role="tab" aria-controls="tabMagy" aria-selected="false" href="#tabMagy">Magyarázat</a>
 			</li>
 		</ul>
 		
@@ -400,9 +400,9 @@
 				<img src="WordCloudNyitolap.png" class="img-fluid pt-2" alt="Nyitólap szófelhő">
 				<p class = "pt-4">Ez a weboldal a magyar online, írott sajtóban 2008 óta megjelent helyreigazítások semleges (az bármiféle szűrés és politikai kommentár nélküli), a 2008-2022 közti időszakra vonatkozóan teljeskörűségre törekvő gyűjteménye, mely az adatbázison túl egyszerű elemzéseket, vizualizációkat is tartalmaz az adatok jobb megértése érdekében. Ami megtalálható az oldalon:</p>
 				<ul class="list-group">
-					<li class="list-group-item">Egy <a id="link-tabDB-tab" href = "">Adatbázis</a>, mely tartalmazza valamennyi helyreigazítás összes adatát, részletesen csoportosítható, több szempont (dátum, sajtótermék, helyreigazítás témája, késése, jelöltsége) szerint szűrhető, rendezhető módon.</li>
-					<li class="list-group-item">Egy Vizualizációk pont, mely az adatok értelmezését segíti. Megjeleníthető az, hogy az egyes címkékre összesen <a id="link-tabVizCimkek-tab" href="">hány helyreigazítás érkezett</a> és ábrázolható az is, hogy ezek <a id="link-tabVizCimkekIdoben-tab" href="">időben hogyan alakultak</a>. Különösen fontos kérdés annak megítélése, hogy a sajtótermék mennyire járt el rosszhiszeműen, ebben segíthet annak vizsgálata, hogy <a id="link-tabVizKeses-tab" href="">mennyi idő telt el</a> a helyreigazítás közléséig, valamint, hogy <a id="link-tabVizJeloles-tab" href="">milyen arányban volt jelölve</a> az eredeti cikken, hogy azt helyreigazították. Végezetül e pontban elérhetőek <a id="link-tabVizSzofelho-tab" href="">szófelhők</a> is, melyek mutatják, hogy az egyes címkékhez tartozó helyreigazításokban milyen szavak fordultak elő gyakran.</li>
-					<li class="list-group-item">Egy <a id="link-tabMagy-tab" href="">Magyarázatok</a> pont, melyből kiderül többek között, hogy mi az oldal célja, milyen eszközökkel került összeállításra, milyen célokra használható, de fontos szempontokat tartalmaz arra vonatkozóan is, hogy milyen limitációkra kell tekintettel lenni az értelmezésnél.</li>
+					<li class="list-group-item">Egy <a href="#tabDB">Adatbázis</a>, mely tartalmazza valamennyi helyreigazítás összes adatát, részletesen csoportosítható, több szempont (dátum, sajtótermék, helyreigazítás témája, késése, jelöltsége) szerint szűrhető, rendezhető módon.</li>
+					<li class="list-group-item">Egy Vizualizációk pont, mely az adatok értelmezését segíti. Megjeleníthető az, hogy az egyes címkékre összesen <a id="link-tabVizCimkek-tab" href="#tabVizCimkek">hány helyreigazítás érkezett</a> és ábrázolható az is, hogy ezek <a id="link-tabVizCimkekIdoben-tab" href="#tabVizCimkekIdoben">időben hogyan alakultak</a>. Különösen fontos kérdés annak megítélése, hogy a sajtótermék mennyire járt el rosszhiszeműen, ebben segíthet annak vizsgálata, hogy <a id="link-tabVizKeses-tab" href="#tabVizKeses">mennyi idő telt el</a> a helyreigazítás közléséig, valamint, hogy <a id="link-tabVizJeloles-tab" href="#tabVizJeloles">milyen arányban volt jelölve</a> az eredeti cikken, hogy azt helyreigazították. Végezetül e pontban elérhetőek <a id="link-tabVizSzofelho-tab" href="#tabVizSzofelho">szófelhők</a> is, melyek mutatják, hogy az egyes címkékhez tartozó helyreigazításokban milyen szavak fordultak elő gyakran.</li>
+					<li class="list-group-item">Egy <a id="link-tabMagy-tab" href="#tabMagy">Magyarázatok</a> pont, melyből kiderül többek között, hogy mi az oldal célja, milyen eszközökkel került összeállításra, milyen célokra használható, de fontos szempontokat tartalmaz arra vonatkozóan is, hogy milyen limitációkra kell tekintettel lenni az értelmezésnél.</li>
 				</ul>
 			</div>
 		
@@ -913,13 +913,65 @@
 	
 	<script>
 	$(document).ready(function() {
-		$('#tabLanding a').click(function (e) {
-			e.preventDefault();
-			$('.nav-tabs button[id="' + $(this).attr('id').substring(5) + '"]').tab('show');
-			if($(this).attr('id').substring(5, 11)=="tabViz") $("#tabViz-tab").dropdown('toggle');
-		})
+	
+		var context = this
+
+		var settings = $.extend({
+			getHashCallback: function(hash, btn) { return hash },
+			selectorAttribute: "href",
+			backToTop: true,
+			initialTab: $('li.active > a', context)
+		});
+
+		var showTabFromHash = function() {
+		  var hash = settings.selectorAttribute == "href" ? window.location.hash : window.location.hash.substring(1);
+		  if (hash != '') {
+			  var selector = hash ? 'a[' + settings.selectorAttribute +'="' + hash + '"]' : settings.initialTab;
+			  $(selector, context).tab('show');
+			  setTimeout(backToTop, 1);
+			  //if (hash.substring(0, 7) == '#tabViz' && $("#tabViz-tab").attr('aria-expanded')) $("#tabViz-tab").dropdown('hide');
+		  }
+		}
+
+		// We use pushState if it's available so the page won't jump, otherwise a shim.
+		var changeHash = function(hash) {
+		  if (history && history.pushState) {
+			history.pushState(null, null, window.location.pathname + window.location.search + '#' + hash);
+		  } else {
+			scrollV = document.body.scrollTop;
+			scrollH = document.body.scrollLeft;
+			window.location.hash = hash;
+			document.body.scrollTop = scrollV;
+			document.body.scrollLeft = scrollH;
+		  }
+		}
+
+		var backToTop = function() {
+		  if (settings.backToTop === true) {
+			window.scrollTo(0, 0);
+		  }
+		}
+
+		// Set the correct tab when the page loads
+		showTabFromHash();
+
+		// Set the correct tab when a user uses their back/forward button
+		$(window).on('hashchange', showTabFromHash);
+
+		// Change the URL when tabs are clicked
+		$('a', context).on('click', function(e) {
+		  var hash = this.href.split('#')[1];
+		  if (typeof hash != 'undefined' && hash != '') {
+			  var adjustedhash = settings.getHashCallback(hash, this);
+			  changeHash(adjustedhash);
+			  setTimeout(backToTop, 1);
+			  if (hash.substring(0, 6) == 'tabViz') $("#tabViz-tab").dropdown('toggle');
+		  }
+		  showTabFromHash();
+		  setTimeout(backToTop, 1);
+		});
 		
-		$('#tabDB-tab').on('shown.bs.tab', function (e) {			
+		$('#tabDB-tab').on('shown.bs.tab', function (e) {
 			$.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
 			$.fn.dataTable.tables({ visible: true, api: true }).searchPanes.rebuildPane();
 		});
