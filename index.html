@@ -929,7 +929,10 @@
 			  var selector = hash ? 'a[' + settings.selectorAttribute +'="' + hash + '"]' : settings.initialTab;
 			  $(selector, context).tab('show');
 			  setTimeout(backToTop, 1);
-			  //if (hash.substring(0, 7) == '#tabViz' && $("#tabViz-tab").attr('aria-expanded')) $("#tabViz-tab").dropdown('hide');
+		  } else {
+			  var selector = 'a[href="#tabLanding"]';
+			  $(selector, context).tab('show');
+			  setTimeout(backToTop, 1);
 		  }
 		}
 
