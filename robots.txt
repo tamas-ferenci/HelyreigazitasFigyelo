@@ -1,2 +1,3 @@
 User-agent: *
 Disallow:
+Sitemap: https://www.helyreigazitas-figyelo.hu/sitemap.xml
