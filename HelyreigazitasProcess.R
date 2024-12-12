@@ -76,7 +76,8 @@ stopwords <- c("állítottuk", "valótlanul", "cikkünkben", "megjelent", "napj�
                "május", "június", "július", "augusztus", "szeptember", "október", "november",
                "december", "tényt", "tüntettük", "alperes", "felperes", "jóhírnévhez", "fűződő",
                "híresztelte", "rendű", "–", "látszatot", "keltettünk", "keltettük", "megsértettük",
-               "mediaworks")
+               "mediaworks", "megállapítja", "megsértette", "kiadott", "bocsánatot", "kérünk",
+               "amiatt", "általa")
 
 unique(temp$CimkeSzoveg)
 
@@ -84,13 +85,13 @@ cszek <- c("Juhász Péter", "Gyurcsány Ferenc", "Czeglédy Csaba", "Vona Gábo
            "Portik Tamás", "SZEVIÉP", "Jakab Péter", "Habony Árpád",
            "Simicska Lajos", "Botka László", "Ujhelyi István",
            "Mészáros Lőrinc", "Bajnai Gordon", "Magyar Helsinki Bizottság",
-           "Gyermekrák Alapítvány", "Bánó András")
+           "Gyermekrák Alapítvány", "Bánó András", "Vasvári Csaba")
 
 setequal(cszek, unique(temp$CimkeSzoveg))
 
 optsizes <- data.table(CimkeSzoveg = cszek,
                        size = c(0.35, 0.3, 0.5, 0.65, 0.45, 0.7, 0.5, 0.5, 0.7, 0.3, 0.6, 0.45, 0.7, 0.4,
-                                0.8, 0.3))
+                                0.8, 0.3, 0.4))
 
 wcres <- rbindlist(lapply(unique(temp$CimkeSzoveg), function(csz) {
   temp2 <- temp[CimkeSzoveg==csz&!word%in%stopwords&!word%in%tolower(strsplit(csz, " ")[[1]]), .(word, freq)]
