@@ -32,6 +32,8 @@ RawDataHelyreigazitasok$Keses <- ifelse(RawDataHelyreigazitasok$HelyreigazitasDa
                                           as.POSIXct(paste(RawDataHelyreigazitasok$CikkDatum, ifelse(RawDataHelyreigazitasok$CikkIdo=="", "12:00", RawDataHelyreigazitasok$CikkIdo))),
                                           units = "days"))
 
+unique(RawDataCimkeHelyreigazitas$HelyreigazitasID)[!unique(RawDataCimkeHelyreigazitas$HelyreigazitasID)%in%RawDataHelyreigazitasok$HelyreigazitasID]
+
 jsonlite::write_json(list(data = RawDataHelyreigazitasok), "helyreigazitasok.json", na = "string")
 
 # jsonlite::write_json(RawDataCimkek$CimkeSzoveg, "cimkek.json")
@@ -56,7 +58,7 @@ jsonlite::write_json(lapply(RawDataCimkeHelyreigazitas[, .N , .(CimkeID)][order(
        PolitikaiPart = RawDataCimkek[CimkeID==cid]$PolitikaiPart,
        x = temp2[CimkeID==cid]$date, y = temp2[CimkeID==cid]$N)), "helyreigido.json", auto_unbox = TRUE)
 
-temp <- merge(rbindlist(lapply(merge(RawDataCimkeHelyreigazitas, RawDataCimkek)[PolitikaiPart==0, .N , .(CimkeID)][N>10][order(N, decreasing = TRUE)]$CimkeID, function(cid) {
+temp <- merge(rbindlist(lapply(merge(RawDataCimkeHelyreigazitas, RawDataCimkek)[PolitikaiPart==0, .N , .(CimkeID)][N>=10][order(N, decreasing = TRUE)]$CimkeID, function(cid) {
   docs <- tm::Corpus(tm::VectorSource(RawDataHelyreigazitasok[HelyreigazitasID%in%RawDataCimkeHelyreigazitas[CimkeID==cid]$HelyreigazitasID]$HelyreigazitasSzoveg))
   docs <- tm::tm_map(docs, tm::removePunctuation)
   docs <- tm::tm_map(docs, tm::removeNumbers)
@@ -85,13 +87,14 @@ cszek <- c("Juhász Péter", "Gyurcsány Ferenc", "Czeglédy Csaba", "Vona Gábo
            "Portik Tamás", "SZEVIÉP", "Jakab Péter", "Habony Árpád",
            "Simicska Lajos", "Botka László", "Ujhelyi István",
            "Mészáros Lőrinc", "Bajnai Gordon", "Magyar Helsinki Bizottság",
-           "Gyermekrák Alapítvány", "Bánó András", "Vasvári Csaba")
+           "Gyermekrák Alapítvány", "Bánó András", "Vasvári Csaba",
+           "Sneider Tamás", "Hadházy Ákos")
 
 setequal(cszek, unique(temp$CimkeSzoveg))
 
 optsizes <- data.table(CimkeSzoveg = cszek,
-                       size = c(0.35, 0.3, 0.5, 0.65, 0.45, 0.7, 0.5, 0.5, 0.7, 0.3, 0.6, 0.45, 0.7, 0.4,
-                                0.8, 0.3, 0.4))
+                       size = c(0.3, 0.3, 0.5, 0.65, 0.45, 0.7, 0.5, 0.5, 0.7, 0.3, 0.6, 0.45, 0.7, 0.4,
+                                0.8, 0.3, 0.4, 0.6, 0.5))
 
 wcres <- rbindlist(lapply(unique(temp$CimkeSzoveg), function(csz) {
   temp2 <- temp[CimkeSzoveg==csz&!word%in%stopwords&!word%in%tolower(strsplit(csz, " ")[[1]]), .(word, freq)]
