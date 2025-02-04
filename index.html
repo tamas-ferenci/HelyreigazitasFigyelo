@@ -139,8 +139,17 @@
 	}
 	
 	$(document).ready(function () {
+		
+		fetch('helyreigazitasok.json')
+			.then(response => response.json())
+			.then(data => {
+				localStorage.setItem('helyreigazitasokdata', JSON.stringify(data));
+			});
+		
+		var helyreigazitasokdata = JSON.parse(localStorage.getItem('helyreigazitasokdata'));
+	
 		var dt = $('#example').DataTable({
-		ajax: 'helyreigazitasok.json',
+		data: helyreigazitasokdata.data,
 		"deferRender": true,
 		"processing": true,
 		responsive: {
@@ -505,8 +514,9 @@
 				}]
 			};
 			
-			$.getJSON('helyreigazitasok.json', function(data) {
-				var tabres = data.data.map(x => x.Cimkek).flat();
+			//$.getJSON('helyreigazitasok.json', function(data) {
+				//var tabres = data.data.map(x => x.Cimkek).flat();
+				var tabres = JSON.parse(localStorage.getItem('helyreigazitasokdata')).data.map(x => x.Cimkek).flat();
 				tabres = Object.filter(tabres, value => value.PolitikaiPart <= document.getElementById('partokisCimkek').checked);
 				tabres = Object.entries(tabres).map(x => x[1].CimkeSzoveg);
 				tabres = tabres.reduce(function (acc, curr) {
@@ -517,7 +527,7 @@
 				options.series[0].name = 'Helyreigazítások száma';
 				options.series[0].data = tabres;
 				var chart = new Highcharts.Chart('containerCimkek', options);
-			});			
+			//});			
 		};
 		makeplotCimkek();
 		</script>
@@ -669,8 +679,8 @@
 					}
 				};
 				
-				$.getJSON('helyreigazitasok.json', function(data) {
-					var res = Object.filter(data.data, value => value.KeszVan >= document.getElementById('csakkeszKeses').checked);					
+				//$.getJSON('helyreigazitasok.json', function(data) {
+					var res = Object.filter(JSON.parse(localStorage.getItem('helyreigazitasokdata')).data, value => value.KeszVan >= document.getElementById('csakkeszKeses').checked);					
 					res = Object.filter(res, value => value.Keses!='NA');
 					res = Object.values(res).map(a => {return {Keses: a.Keses/365, name: a.SajtotermekNev, CikkCim: a.CikkCim, CikkDatum: a.CikkDatum, HelyreigazitasDatum: a.HelyreigazitasDatum}});
 					var uniqueNames = [...new Set(res.map(x => x.name))];
@@ -684,7 +694,7 @@
 					options.series = temp;
 					options.yAxis.categories = uniqueNames;
 					var chart = new Highcharts.Chart('containerKeses', options);
-				});
+				//});
 			};
 			makeplotKeses();
 			</script>
@@ -764,8 +774,8 @@
 					}]
 				};
 				
-				$.getJSON('helyreigazitasok.json', function(data) {
-					var res = Object.values(data.data.reduce(function(m, d){						
+				//$.getJSON('helyreigazitasok.json', function(data) {
+					var res = Object.values(JSON.parse(localStorage.getItem('helyreigazitasokdata')).data.reduce(function(m, d){						
 						if(!m[d.SajtotermekNev]){
 						  m[d.SajtotermekNev] = {...d, ossz: d.HelyreigazitasJelolve=='NA' ? 0 : 1, jelolt: d.HelyreigazitasJelolve=='NA' ? 0 : 1};						  
 						  return m;
@@ -781,7 +791,7 @@
 					options.series[0].name = 'Jelölt cikk aránya';
 					options.series[0].data = res;
 					var chart = new Highcharts.Chart('containerJeloles', options);
-				});
+				//});
 			};
 			makeplotJeloles();
 			</script>
