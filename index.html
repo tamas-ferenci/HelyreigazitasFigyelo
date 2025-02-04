@@ -138,13 +138,17 @@
 		}
 	}
 	
-	$(document).ready(function () {
+	$(document).ready(async function () {
+	
+		const response = await fetch('helyreigazitasok.json');
+		const json = await response.json();
+		localStorage.setItem('helyreigazitasokdata', JSON.stringify(json));
 		
-		fetch('helyreigazitasok.json')
-			.then(response => response.json())
-			.then(data => {
-				localStorage.setItem('helyreigazitasokdata', JSON.stringify(data));
-			});
+		//fetch('helyreigazitasok.json')
+		//	.then(response => response.json())
+		//	.then(data => {
+		//		localStorage.setItem('helyreigazitasokdata', JSON.stringify(data));
+		//	});
 		
 		var helyreigazitasokdata = JSON.parse(localStorage.getItem('helyreigazitasokdata'));
 	
