@@ -321,9 +321,15 @@
 	
 	$(document).ready(async function () {
 	
-		const response = await fetch('helyreigazitasok.json');
-		const json = await response.json();
-		localStorage.setItem('helyreigazitasokdata', JSON.stringify(json));
+		//const response0 = await fetch('helyreigazitasok.json');
+		const response = await fetch('helyreigazitasok.json.gz');
+		const ds = new DecompressionStream('gzip');
+		//const json = await response0.json();
+		//console.log(json);
+		const decompressed_stream = response.body.pipeThrough(ds);
+		const decompressed_text = await new Response(decompressed_stream).text();
+		//console.log(JSON.parse(decompressed_text));
+		localStorage.setItem('helyreigazitasokdata', JSON.stringify(JSON.parse(decompressed_text)));
 		
 		//fetch('helyreigazitasok.json')
 		//	.then(response => response.json())
