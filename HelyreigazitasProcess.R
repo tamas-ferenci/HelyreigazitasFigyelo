@@ -107,6 +107,8 @@ jsonlite::write_json(list(data = cszek[, .(CimkeID, CimkeSzoveg)]), "cszek.json"
 file.remove("cszek.json.gz")
 R.utils::gzip("cszek.json")
 
+unlink("./wcimg/*")
+
 for(i in 1:nrow(cszek)) {
   temp2 <- temp[CimkeID == cszek$CimkeID[i] & !word %in% stopwords &
                   !word %in% tolower(strsplit(cszek$CimkeSzoveg[i], " ")[[1]]), .(word, freq)]
