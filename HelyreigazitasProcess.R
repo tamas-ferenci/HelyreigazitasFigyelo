@@ -116,3 +116,5 @@ for(i in 1:nrow(cszek)) {
                           "../wctemp.html", selfcontained = FALSE)
   webshot::webshot("../wctemp.html", paste0("./wcimg/", cszek$CimkeID[i], ".png"), delay = 10)
 }
+
+cszek$CimkeID[1] # A szofelhoImg id-jű img src-je
