@@ -11,6 +11,6 @@ A [https://www.helyreigazitas-figyelo.hu/](https://www.helyreigazitas-figyelo.hu
 - A nyers táblákat előfeldolgozó R-szkript: [HelyreigazitasProcess.R](https://github.com/tamas-ferenci/HelyreigazitasFigyelo/blob/main/HelyreigazitasProcess.R)
 - Eredményül kapott segédfájlok:
   - Címkék JS fájlja: [cimkek.js](https://github.com/tamas-ferenci/HelyreigazitasFigyelo/blob/main/cimkek.js)
-  - Időbeli alakulás segédfájlja: [helyreigido.json](https://github.com/tamas-ferenci/HelyreigazitasFigyelo/blob/main/helyreigido.json.gz)
-  - Főtábla a weboldalhoz előfeldolgozva: [helyreigazitasok.json](https://github.com/tamas-ferenci/HelyreigazitasFigyelo/blob/main/helyreigazitasok.json.gz)
+  - Időbeli alakulás segédfájlja: [helyreigido.json.gz](https://github.com/tamas-ferenci/HelyreigazitasFigyelo/blob/main/helyreigido.json.gz)
+  - Főtábla a weboldalhoz előfeldolgozva: [helyreigazitasok.json.gz](https://github.com/tamas-ferenci/HelyreigazitasFigyelo/blob/main/helyreigazitasok.json.gz)
 - A weboldal forrása: [index.html](https://github.com/tamas-ferenci/HelyreigazitasFigyelo/blob/main/index.html)
