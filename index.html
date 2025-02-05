@@ -564,7 +564,6 @@
 		Object.entries(cszres).map(x => {
 			$('#cimkeSzofelho').append($('<option></option>').attr('value', x[1].CimkeID).text(x[1].CimkeSzoveg));
 		})
-		document.getElementById('szofelhoImg').src='./wcimg/'+$('#cimkeSzofelho').find('option:selected').val()+'.png';
 	});	
 	</script>
 	
@@ -626,7 +625,7 @@
 		<div class="tab-content" id="myTabContent">
 		
 			<div class="tab-pane fade show active" id="tabLanding" role="tabpanel" aria-labelledby="tabLanding-tab">
-				<img src="WordCloudNyitolap.webp" class="img-fluid pt-2" alt="Nyitólap szófelhő">
+				<img src="WordCloudNyitolap.webp" class="img-fluid pt-2" alt="Nyitólap szófelhő" width="2500" height="402">
 				<p class = "pt-4">Ez a weboldal a magyar online, írott sajtóban 2008 óta megjelent helyreigazítások semleges (azaz bármiféle szűrés és politikai kommentár nélküli), a 2008-2022 közti időszakra vonatkozóan teljeskörűségre törekvő gyűjteménye, mely az adatbázison túl egyszerű elemzéseket, vizualizációkat is tartalmaz az adatok jobb megértése érdekében. Ami megtalálható az oldalon:</p>
 				<ul class="list-group">
 					<li class="list-group-item">Egy <a href="#tabDB">Adatbázis</a>, mely tartalmazza valamennyi helyreigazítás összes adatát, részletesen csoportosítható, több szempont (dátum, sajtótermék, helyreigazítás témája, késése, jelöltsége) szerint szűrhető, rendezhető módon.</li>
@@ -1016,7 +1015,7 @@
 				</div>
 			</div>
 			
-			<img id = "szofelhoImg" alt = "Szófelhő">
+			<img id = "szofelhoImg" alt = "Szófelhő" src="./wcimg/223.png" width="992" height="757">
 		</div>
 		
 		<div class="tab-pane fade" id="tabMagy" role="tabpanel" aria-labelledby="tabMagy-tab">
