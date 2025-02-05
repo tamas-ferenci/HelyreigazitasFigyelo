@@ -808,22 +808,19 @@
 					}
 				};
 				
-				//$.getJSON('helyreigido.json', function(data) {
-					var hiidata = JSON.parse(localStorage.getItem('helyreigidodata'));
-					var temp = Array(hiidata.length);
-					for(var i = 0; i<hiidata.length; i++) {
-						temp[i] = {
-							name: hiidata[i].name,
-							data: hiidata[i].y,
-							visible: hiidata[i].OsszN >= document.getElementById('minhelyreigCimkekIdoben').value & hiidata[i].PolitikaiPart<= document.getElementById('partokisCimkekIdoben').checked ? true : false
-						};
-					}
-					options.series = temp;
+				var hiidata = JSON.parse(localStorage.getItem('helyreigidodata'));
+				var temp = Array(hiidata.length);
+				for(var i = 0; i<hiidata.length; i++) {
+					temp[i] = {
+						name: hiidata[i].name,
+						data: hiidata[i].y,
+						visible: hiidata[i].OsszN >= document.getElementById('minhelyreigCimkekIdoben').value & hiidata[i].PolitikaiPart<= document.getElementById('partokisCimkekIdoben').checked ? true : false
+					};
+				}
+				options.series = temp;
 
-					var chart = new Highcharts.Chart('containerCimkekIdoben', options);
-				//})
+				var chart = new Highcharts.Chart('containerCimkekIdoben', options);
 			};
-			//makeplotCimkekIdoben();
 			</script>
 		</div>
 		
