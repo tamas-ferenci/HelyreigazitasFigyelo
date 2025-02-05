@@ -343,8 +343,9 @@
 	
 		var dt = $('#example').DataTable({
 		data: JSON.parse(localStorage.getItem('helyreigazitasokdata')).data,
-		"deferRender": true,
-		"processing": true,
+		paging: true,
+		deferRender: true,
+		processing: true,
 		responsive: {
 			details: {
 				display: $.fn.dataTable.Responsive.display.childRowImmediate,
