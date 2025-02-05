@@ -320,27 +320,22 @@
 	}
 	
 	$(document).ready(async function () {
-	
-		//const response0 = await fetch('helyreigazitasok.json');
-		const response = await fetch('helyreigazitasok.json.gz');
-		const ds = new DecompressionStream('gzip');
-		//const json = await response0.json();
-		//console.log(json);
-		const decompressed_stream = response.body.pipeThrough(ds);
-		const decompressed_text = await new Response(decompressed_stream).text();
-		//console.log(JSON.parse(decompressed_text));
-		localStorage.setItem('helyreigazitasokdata', JSON.stringify(JSON.parse(decompressed_text)));
+
+		const dsHI = new DecompressionStream('gzip');
+		const dsHII = new DecompressionStream('gzip');
 		
-		//fetch('helyreigazitasok.json')
-		//	.then(response => response.json())
-		//	.then(data => {
-		//		localStorage.setItem('helyreigazitasokdata', JSON.stringify(data));
-		//	});
+		const respHI = await fetch('helyreigazitasok.json.gz');
+		const ddsHI = respHI.body.pipeThrough(dsHI);
+		const dtHI = await new Response(ddsHI).text();
+		localStorage.setItem('helyreigazitasokdata', JSON.stringify(JSON.parse(dtHI)));
 		
-		var helyreigazitasokdata = JSON.parse(localStorage.getItem('helyreigazitasokdata'));
+		const respHII = await fetch('helyreigido.json.gz');
+		const ddsHII = respHII.body.pipeThrough(dsHII);
+		const dtHII = await new Response(ddsHII).text();
+		localStorage.setItem('helyreigidodata', JSON.stringify(JSON.parse(dtHII)));
 	
 		var dt = $('#example').DataTable({
-		data: helyreigazitasokdata.data,
+		data: JSON.parse(localStorage.getItem('helyreigazitasokdata')).data,
 		"deferRender": true,
 		"processing": true,
 		responsive: {
@@ -726,22 +721,18 @@
 				}]
 			};
 			
-			//$.getJSON('helyreigazitasok.json', function(data) {
-				//var tabres = data.data.map(x => x.Cimkek).flat();
-				var tabres = JSON.parse(localStorage.getItem('helyreigazitasokdata')).data.map(x => x.Cimkek).flat();
-				tabres = Object.filter(tabres, value => value.PolitikaiPart <= document.getElementById('partokisCimkek').checked);
-				tabres = Object.entries(tabres).map(x => x[1].CimkeSzoveg);
-				tabres = tabres.reduce(function (acc, curr) {
-					return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
-				}, {});
-				tabres = Object.filter(tabres, value => value >= document.getElementById('minhelyreigCimkek').value);
-				tabres = Object.entries(tabres).sort((a, b) => a[1] - b[1]);
-				options.series[0].name = 'Helyreigazítások száma';
-				options.series[0].data = tabres;
-				var chart = new Highcharts.Chart('containerCimkek', options);
-			//});			
+			var tabres = JSON.parse(localStorage.getItem('helyreigazitasokdata')).data.map(x => x.Cimkek).flat();
+			tabres = Object.filter(tabres, value => value.PolitikaiPart <= document.getElementById('partokisCimkek').checked);
+			tabres = Object.entries(tabres).map(x => x[1].CimkeSzoveg);
+			tabres = tabres.reduce(function (acc, curr) {
+				return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+			}, {});
+			tabres = Object.filter(tabres, value => value >= document.getElementById('minhelyreigCimkek').value);
+			tabres = Object.entries(tabres).sort((a, b) => a[1] - b[1]);
+			options.series[0].name = 'Helyreigazítások száma';
+			options.series[0].data = tabres;
+			var chart = new Highcharts.Chart('containerCimkek', options);		
 		};
-		//makeplotCimkek();
 		</script>
 		</div>
 		<div class="tab-pane fade" id="tabVizCimkekIdoben" role="tabpanel" aria-labelledby="tabVizCimkekIdoben-tab">
@@ -817,19 +808,20 @@
 					}
 				};
 				
-				$.getJSON('helyreigido.json', function(data) {
-					var temp = Array(data.length);
-					for(var i = 0; i<data.length; i++) {
+				//$.getJSON('helyreigido.json', function(data) {
+					var hiidata = JSON.parse(localStorage.getItem('helyreigidodata'));
+					var temp = Array(hiidata.length);
+					for(var i = 0; i<hiidata.length; i++) {
 						temp[i] = {
-							name: data[i].name,
-							data: data[i].y,
-							visible: data[i].OsszN >= document.getElementById('minhelyreigCimkekIdoben').value & data[i].PolitikaiPart<= document.getElementById('partokisCimkekIdoben').checked ? true : false
+							name: hiidata[i].name,
+							data: hiidata[i].y,
+							visible: hiidata[i].OsszN >= document.getElementById('minhelyreigCimkekIdoben').value & hiidata[i].PolitikaiPart<= document.getElementById('partokisCimkekIdoben').checked ? true : false
 						};
 					}
 					options.series = temp;
 
 					var chart = new Highcharts.Chart('containerCimkekIdoben', options);
-				})
+				//})
 			};
 			//makeplotCimkekIdoben();
 			</script>
@@ -891,24 +883,21 @@
 					}
 				};
 				
-				//$.getJSON('helyreigazitasok.json', function(data) {
-					var res = Object.filter(JSON.parse(localStorage.getItem('helyreigazitasokdata')).data, value => value.KeszVan >= document.getElementById('csakkeszKeses').checked);					
-					res = Object.filter(res, value => value.Keses!='NA');
-					res = Object.values(res).map(a => {return {Keses: a.Keses/365, name: a.SajtotermekNev, CikkCim: a.CikkCim, CikkDatum: a.CikkDatum, HelyreigazitasDatum: a.HelyreigazitasDatum}});
-					var uniqueNames = [...new Set(res.map(x => x.name))];
-					var temp = Array(uniqueNames.length);
-					for (var i = 0; i<uniqueNames.length; i++) {
-						temp[i] = {
-							name: uniqueNames[i],
-							data: res.filter(x => x.name==uniqueNames[i]).map(a => {return{x: a.Keses, y: i, CikkCim: a.CikkCim, CikkDatum: a.CikkDatum, HelyreigazitasDatum: a.HelyreigazitasDatum}})
-						};
-					}
-					options.series = temp;
-					options.yAxis.categories = uniqueNames;
-					var chart = new Highcharts.Chart('containerKeses', options);
-				//});
+				var res = Object.filter(JSON.parse(localStorage.getItem('helyreigazitasokdata')).data, value => value.KeszVan >= document.getElementById('csakkeszKeses').checked);					
+				res = Object.filter(res, value => value.Keses!='NA');
+				res = Object.values(res).map(a => {return {Keses: a.Keses/365, name: a.SajtotermekNev, CikkCim: a.CikkCim, CikkDatum: a.CikkDatum, HelyreigazitasDatum: a.HelyreigazitasDatum}});
+				var uniqueNames = [...new Set(res.map(x => x.name))];
+				var temp = Array(uniqueNames.length);
+				for (var i = 0; i<uniqueNames.length; i++) {
+					temp[i] = {
+						name: uniqueNames[i],
+						data: res.filter(x => x.name==uniqueNames[i]).map(a => {return{x: a.Keses, y: i, CikkCim: a.CikkCim, CikkDatum: a.CikkDatum, HelyreigazitasDatum: a.HelyreigazitasDatum}})
+					};
+				}
+				options.series = temp;
+				options.yAxis.categories = uniqueNames;
+				var chart = new Highcharts.Chart('containerKeses', options);
 			};
-			//makeplotKeses();
 			</script>
 		</div>
 		
@@ -986,26 +975,23 @@
 					}]
 				};
 				
-				//$.getJSON('helyreigazitasok.json', function(data) {
-					var res = Object.values(JSON.parse(localStorage.getItem('helyreigazitasokdata')).data.reduce(function(m, d){						
-						if(!m[d.SajtotermekNev]){
-						  m[d.SajtotermekNev] = {...d, ossz: d.HelyreigazitasJelolve=='NA' ? 0 : 1, jelolt: d.HelyreigazitasJelolve=='NA' ? 0 : 1};						  
-						  return m;
-						}
-						m[d.SajtotermekNev].jelolt += d.HelyreigazitasJelolve=='NA' ? 0 : d.HelyreigazitasJelolve;
-						m[d.SajtotermekNev].ossz += d.HelyreigazitasJelolve!='NA';
-						return m;
-					},{})).map(function(x) {return {SajtotermekNev: x.SajtotermekNev, KeszVan: x.KeszVan, OsszHelyreigazitas: x.ossz, Jelolt: x.jelolt, Arany: x.jelolt/x.ossz};});
-					res = res.filter(value => value.KeszVan >= document.getElementById('csakkeszJeloles').checked);
-					res = res.filter(value => value.OsszHelyreigazitas >= document.getElementById('minhelyreigJeloles').value);
-					res = res.sort((a, b) => a.Arany - b.Arany);
-					res = res.map(a => { return {name: a.SajtotermekNev, x: a.x, y: a.Arany*100, OsszHelyreigazitas: a.OsszHelyreigazitas, Jelolt: a.Jelolt}});					
-					options.series[0].name = 'Jelölt cikk aránya';
-					options.series[0].data = res;
-					var chart = new Highcharts.Chart('containerJeloles', options);
-				//});
+				var res = Object.values(JSON.parse(localStorage.getItem('helyreigazitasokdata')).data.reduce(function(m, d){						
+					if(!m[d.SajtotermekNev]){
+					  m[d.SajtotermekNev] = {...d, ossz: d.HelyreigazitasJelolve=='NA' ? 0 : 1, jelolt: d.HelyreigazitasJelolve=='NA' ? 0 : 1};						  
+					  return m;
+					}
+					m[d.SajtotermekNev].jelolt += d.HelyreigazitasJelolve=='NA' ? 0 : d.HelyreigazitasJelolve;
+					m[d.SajtotermekNev].ossz += d.HelyreigazitasJelolve!='NA';
+					return m;
+				},{})).map(function(x) {return {SajtotermekNev: x.SajtotermekNev, KeszVan: x.KeszVan, OsszHelyreigazitas: x.ossz, Jelolt: x.jelolt, Arany: x.jelolt/x.ossz};});
+				res = res.filter(value => value.KeszVan >= document.getElementById('csakkeszJeloles').checked);
+				res = res.filter(value => value.OsszHelyreigazitas >= document.getElementById('minhelyreigJeloles').value);
+				res = res.sort((a, b) => a.Arany - b.Arany);
+				res = res.map(a => { return {name: a.SajtotermekNev, x: a.x, y: a.Arany*100, OsszHelyreigazitas: a.OsszHelyreigazitas, Jelolt: a.Jelolt}});					
+				options.series[0].name = 'Jelölt cikk aránya';
+				options.series[0].data = res;
+				var chart = new Highcharts.Chart('containerJeloles', options);
 			};
-			//makeplotJeloles();
 			</script>
 		</div>		
 		
