@@ -278,9 +278,9 @@
 	
 	<script>
 	Object.filter = (obj, predicate) => 
-					Object.assign(...Object.keys(obj)
-									.filter( key => predicate(obj[key]) )
-									.map( key => ({ [key]: obj[key] }) ) );
+		Object.keys(obj)
+			  .filter( key => predicate(obj[key]) )
+			  .reduce( (res, key) => (res[key] = obj[key], res), {} );
 	
 	function keseskiiro(numberOfDays) {
 		var years = Math.floor(numberOfDays / 365.242199);
@@ -323,6 +323,7 @@
 
 		const dsHI = new DecompressionStream('gzip');
 		const dsHII = new DecompressionStream('gzip');
+		const dsCSZ = new DecompressionStream('gzip');
 		
 		const respHI = await fetch('helyreigazitasok.json.gz');
 		const ddsHI = respHI.body.pipeThrough(dsHI);
@@ -333,6 +334,11 @@
 		const ddsHII = respHII.body.pipeThrough(dsHII);
 		const dtHII = await new Response(ddsHII).text();
 		localStorage.setItem('helyreigidodata', JSON.stringify(JSON.parse(dtHII)));
+		
+		const respCSZ = await fetch('cszek.json.gz');
+		const ddsCSZ = respCSZ.body.pipeThrough(dsCSZ);
+		const dtCSZ = await new Response(ddsCSZ).text();
+		localStorage.setItem('cszdata', JSON.stringify(JSON.parse(dtCSZ)));
 	
 		var dt = $('#example').DataTable({
 		data: JSON.parse(localStorage.getItem('helyreigazitasokdata')).data,
@@ -552,6 +558,12 @@
 		makeplotCimkekIdoben();
 		makeplotKeses();
 		makeplotJeloles();
+		
+		var cszres = JSON.parse(localStorage.getItem('cszdata')).data;
+		Object.entries(cszres).map(x => {
+			$('#cimkeSzofelho').append($('<option></option>').attr('value', x[1].CimkeID).text(x[1].CimkeSzoveg));
+		})
+		document.getElementById('szofelhoImg').src='./wcimg/'+$('#cimkeSzofelho').find('option:selected').val()+'.png';
 	});	
 	</script>
 	
@@ -999,23 +1011,11 @@
 					<label class="form-label" for="cimkeSzofelho">Címkék:</label>
 				</div>
 				<div class="col-auto">
-					<select class="form-select" id="cimkeSzofelho" onChange="makeplotSzofelho();"></select>
+					<select class="form-select" id="cimkeSzofelho" onChange="document.getElementById('szofelhoImg').src='./wcimg/'+$(this).find('option:selected').val()+'.png'"></select>
 				</div>
 			</div>
 			
-			<img id = "szofelhoImg" alt = "Szófelhő" src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
-			
-			<script>
-			function makeplotSzofelho() {				
-				$.getJSON("szofelhok.json", function (data) {
-					$.each(data, function (key, entry) {
-						if(!Array.from(cimkeSzofelho.options).map(o => o.text).includes(entry.CimkeSzoveg)) $('#cimkeSzofelho').append($('<option></option>').attr('value', entry.CimkeSzoveg).text(entry.CimkeSzoveg));
-					})
-					$("#szofelhoImg").attr("src", data.filter(value => value.CimkeSzoveg == document.getElementById('cimkeSzofelho').value).map(value => value.Img));
-				})
-			}
-			makeplotSzofelho();
-			</script>
+			<img id = "szofelhoImg" alt = "Szófelhő">
 		</div>
 		
 		<div class="tab-pane fade" id="tabMagy" role="tabpanel" aria-labelledby="tabMagy-tab">
