@@ -8,6 +8,9 @@ RawDataCimkek <- fread("cimkek.csv", dec = ",")
 RawDataCimkek[duplicated(CimkeSzoveg)]
 
 RawDataCimkeHelyreigazitas <- fread("cimke_helyreigazitas.csv", dec = ",")
+
+RawDataCimkek[!CimkeID%in%RawDataCimkeHelyreigazitas$CimkeID]
+
 RawDataSajtotermekek <- fread("sajtotermekek.csv")
 RawDataHivatkozasok <- fread("hivatkozasok.csv", dec = ",")
 RawDataHivatkozasok <- merge(RawDataHivatkozasok, RawDataSajtotermekek)
